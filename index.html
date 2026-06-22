@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Směny">
+<title>Směny</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --accent: #2563EB;
+    --accent-light: #EFF6FF;
+    --text: #1A1A1A;
+    --muted: #6B7280;
+    --border: #E5E5E0;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    --success: #16A34A;
+    --success-light: #F0FDF4;
+    --radius: 14px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .header-sub { font-size: 13px; color: var(--muted); }
+
+  /* Main content */
+  .content { flex: 1; padding: 16px 16px calc(var(--safe-bottom) + 80px); display: flex; flex-direction: column; gap: 12px; }
+
+  /* Add shift card */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+  }
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .field input {
+    width: 100%;
+    height: 44px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--accent); background: white; }
+
+  .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .duration-preview {
+    background: var(--accent-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+  }
+  .duration-preview.hidden { display: none; }
+  .duration-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+
+  .btn-add {
+    width: 100%;
+    height: 50px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+  .btn-add:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* Shifts list */
+  .shifts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .shifts-header .card-title { margin-bottom: 0; }
+  .shifts-count {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted);
+  }
+  .empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
+  .empty-state p { font-size: 14px; }
+
+  .shift-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .shift-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .shift-item:first-child { padding-top: 0; }
+
+  .shift-date-badge {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+  .shift-date-day { font-size: 20px; font-weight: 700; line-height: 1; }
+  .shift-date-month { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  .shift-info { flex: 1; min-width: 0; }
+  .shift-time { font-size: 15px; font-weight: 600; }
+  .shift-duration { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .shift-delete {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--danger-light);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    transition: opacity 0.15s;
+    -webkit-appearance: none;
+  }
+  .shift-delete:active { opacity: 0.7; }
+
+  /* Summary */
+  .summary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .summary-box {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .summary-box .val { font-size: 22px; font-weight: 700; color: var(--text); }
+  .summary-box .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
+  .btn-copy {
+    width: 100%;
+    height: 50px;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    -webkit-appearance: none;
+  }
+  .btn-copy:active { opacity: 0.85; transform: scale(0.98); }
+
+  .copy-toast {
+    position: fixed;
+    bottom: calc(var(--safe-bottom) + 90px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1A1A1A;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Bottom tab bar */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding-bottom: var(--safe-bottom);
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 8px;
+    gap: 4px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+  .tab-icon { font-size: 22px; }
+  .tab-label { font-size: 10px; font-weight: 500; color: var(--muted); }
+  .tab.active .tab-icon { font-size: 22px; }
+  .tab.active .tab-label { color: var(--accent); font-weight: 600; }
+
+  /* Section visibility */
+  .section { display: none; }
+  .section.active { display: flex; flex-direction: column; gap: 12px; }
+
+  /* Note field */
+  .field textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    min-height: 80px;
+    transition: border-color 0.15px;
+  }
+  .field textarea:focus { border-color: var(--accent); background: white; }
+
+  /* Danger zone */
+  .btn-danger {
+    width: 100%;
+    height: 46px;
+    background: none;
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-appearance: none;
+    transition: background 0.15s;
+  }
+  .btn-danger:active { background: var(--danger-light); }
+
+  .period-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .period-btn {
+    flex: 1;
+    height: 36px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: all 0.15s;
+  }
+  .period-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>Směny</h1>
+    <span class="header-badge" id="headerBadge">0 hod</span>
+  </div>
+  <div class="header-sub" id="headerSub">Tento měsíc</div>
+</div>
+
+<div class="content">
+
+  <!-- ADD SECTION -->
+  <div class="section active" id="sec-add">
+    <div class="card">
+      <div class="card-title">Přidat směnu</div>
+
+      <div class="field">
+        <label>Datum</label>
+        <input type="date" id="inDate">
+      </div>
+
+      <div class="time-row">
+        <div class="field">
+          <label>Začátek</label>
+          <input type="time" id="inStart">
+        </div>
+        <div class="field">
+          <label>Konec</label>
+          <input type="time" id="inEnd">
+        </div>
+      </div>
+
+      <div id="durationPreview" class="duration-preview hidden">
+        <div class="duration-dot"></div>
+        <span id="durationText"></span>
+      </div>
+
+      <div class="field" style="margin-top:12px; margin-bottom:0;">
+        <label>Poznámka (nepovinné)</label>
+        <textarea id="inNote" placeholder="Např. pokladna, sklad..."></textarea>
+      </div>
+
+      <button class="btn-add" style="margin-top:14px;" onclick="addShift()">Přidat směnu</button>
+    </div>
+  </div>
+
+  <!-- LIST SECTION -->
+  <div class="section" id="sec-list">
+    <div class="card">
+      <div class="shifts-header">
+        <div class="card-title">Záznamy</div>
+        <span class="shifts-count" id="shiftsCount"></span>
+      </div>
+      <div id="shiftsList"></div>
+    </div>
+  </div>
+
+  <!-- EXPORT SECTION -->
+  <div class="section" id="sec-export">
+    <div class="card">
+      <div class="card-title">Přehled & export</div>
+
+      <div class="period-selector">
+        <button class="period-btn active" id="periodAll" onclick="setPeriod('all')">Vše</button>
+        <button class="period-btn" id="periodMonth" onclick="setPeriod('month')">Tento měsíc</button>
+        <button class="period-btn" id="periodWeek" onclick="setPeriod('week')">Tento týden</button>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-box">
+          <div class="val" id="sumShifts">0</div>
+          <div class="lbl">Směn</div>
+        </div>
+        <div class="summary-box">
+          <div class="val" id="sumHours">0</div>
+          <div class="lbl">Hodin celkem</div>
+        </div>
+      </div>
+
+      <button class="btn-copy" onclick="copyForWhatsApp()">
+        <span>📋</span> Kopírovat pro WhatsApp
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Nebezpečná zóna</div>
+      <button class="btn-danger" onclick="clearAll()">Smazat všechny záznamy</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab active" id="tab-add" onclick="switchTab('add')">
+    <span class="tab-icon">＋</span>
+    <span class="tab-label">Přidat</span>
+  </button>
+  <button class="tab" id="tab-list" onclick="switchTab('list')">
+    <span class="tab-icon">📋</span>
+    <span class="tab-label">Seznam</span>
+  </button>
+  <button class="tab" id="tab-export" onclick="switchTab('export')">
+    <span class="tab-icon">📤</span>
+    <span class="tab-label">Export</span>
+  </button>
+</div>
+
+<div class="copy-toast" id="toast">✅ Zkopírováno do schránky</div>
+
+<script>
+let shifts = JSON.parse(localStorage.getItem('shifts') || '[]');
+let currentPeriod = 'all';
+
+const MONTHS_SHORT = ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'];
+const MONTHS_LONG = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+
+function save() { localStorage.setItem('shifts', JSON.stringify(shifts)); }
+
+function calcDuration(start, end) {
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  let mins = (eh * 60 + em) - (sh * 60 + sm);
+  if (mins < 0) mins += 24 * 60;
+  return mins / 60;
+}
+
+function formatDuration(h) {
+  const whole = Math.floor(h);
+  const mins = Math.round((h - whole) * 60);
+  if (mins === 0) return whole + ' hod';
+  if (whole === 0) return mins + ' min';
+  return whole + ' hod ' + mins + ' min';
+}
+
+function formatDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return d + '.' + m + '.';
+}
+
+// Set today's date as default
+const today = new Date();
+const pad = n => String(n).padStart(2, '0');
+document.getElementById('inDate').value = today.getFullYear() + '-' + pad(today.getMonth()+1) + '-' + pad(today.getDate());
+
+// Live duration preview
+function updatePreview() {
+  const s = document.getElementById('inStart').value;
+  const e = document.getElementById('inEnd').value;
+  const preview = document.getElementById('durationPreview');
+  if (s && e) {
+    const h = calcDuration(s, e);
+    document.getElementById('durationText').textContent = formatDuration(h);
+    preview.classList.remove('hidden');
+  } else {
+    preview.classList.add('hidden');
+  }
+}
+document.getElementById('inStart').addEventListener('input', updatePreview);
+document.getElementById('inEnd').addEventListener('input', updatePreview);
+
+function addShift() {
+  const date = document.getElementById('inDate').value;
+  const start = document.getElementById('inStart').value;
+  const end = document.getElementById('inEnd').value;
+  const note = document.getElementById('inNote').value.trim();
+
+  if (!date || !start || !end) {
+    alert('Vyplň prosím datum, začátek a konec směny.');
+    return;
+  }
+
+  const duration = calcDuration(start, end);
+  shifts.push({ date, start, end, duration, note });
+  shifts.sort((a, b) => a.date.localeCompare(b.date) || a.start.localeCompare(b.start));
+  save();
+  updateAll();
+
+  // Clear time fields, keep date
+  document.getElementById('inStart').value = '';
+  document.getElementById('inEnd').value = '';
+  document.getElementById('inNote').value = '';
+  document.getElementById('durationPreview').classList.add('hidden');
+
+  // Switch to list to confirm
+  switchTab('list');
+}
+
+function deleteShift(idx) {
+  if (confirm('Smazat tuto směnu?')) {
+    shifts.splice(idx, 1);
+    save();
+    updateAll();
+  }
+}
+
+function getFiltered() {
+  if (currentPeriod === 'all') return shifts;
+  const now = new Date();
+  return shifts.filter(s => {
+    const d = new Date(s.date);
+    if (currentPeriod === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    if (currentPeriod === 'week') {
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+      startOfWeek.setHours(0,0,0,0);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return d >= startOfWeek && d <= endOfWeek;
+    }
+    return true;
+  });
+}
+
+function renderList() {
+  const list = document.getElementById('shiftsList');
+  const count = document.getElementById('shiftsCount');
+  if (shifts.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>Zatím žádné směny.<br>Přidej první na záložce Přidat.</p></div>';
+    count.textContent = '';
+    return;
+  }
+  count.textContent = shifts.length + ' záznam' + (shifts.length === 1 ? '' : shifts.length < 5 ? 'y' : 'ů');
+  list.innerHTML = shifts.map((s, i) => {
+    const [y, m, d] = s.date.split('-').map(Number);
+    return `<div class="shift-item">
+      <div class="shift-date-badge">
+        <div class="shift-date-day">${d}</div>
+        <div class="shift-date-month">${MONTHS_SHORT[m-1]}</div>
+      </div>
+      <div class="shift-info">
+        <div class="shift-time">${s.start} – ${s.end}</div>
+        <div class="shift-duration">${formatDuration(s.duration)}${s.note ? ' · ' + s.note : ''}</div>
+      </div>
+      <button class="shift-delete" onclick="deleteShift(${i})" aria-label="Smazat">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function renderSummary() {
+  const filtered = getFiltered();
+  const total = filtered.reduce((sum, s) => sum + s.duration, 0);
+  document.getElementById('sumShifts').textContent = filtered.length;
+  document.getElementById('sumHours').textContent = total % 1 === 0 ? total : total.toFixed(1);
+}
+
+function renderHeader() {
+  const now = new Date();
+  const thisMonth = shifts.filter(s => {
+    const d = new Date(s.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const total = thisMonth.reduce((sum, s) => sum + s.duration, 0);
+  document.getElementById('headerBadge').textContent = (total % 1 === 0 ? total : total.toFixed(1)) + ' hod';
+  document.getElementById('headerSub').textContent = MONTHS_LONG[now.getMonth()] + ' ' + now.getFullYear();
+}
+
+function updateAll() {
+  renderList();
+  renderSummary();
+  renderHeader();
+}
+
+function setPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('period' + p.charAt(0).toUpperCase() + p.slice(1)).classList.add('active');
+  renderSummary();
+}
+
+function copyForWhatsApp() {
+  const filtered = getFiltered();
+  if (filtered.length === 0) {
+    alert('Žádné směny k exportu.');
+    return;
+  }
+  const lines = filtered.map(s => {
+    const [y, m, d] = s.date.split('-').map(Number);
+    const dur = s.duration % 1 === 0 ? s.duration : s.duration.toFixed(1);
+    return `${d}.${m}. ${s.start}-${s.end}....${dur} ${s.duration === 1 ? 'hodina' : s.duration < 5 ? 'hodiny' : 'hodin'}${s.note ? ' (' + s.note + ')' : ''}`;
+  });
+  const total = filtered.reduce((sum, s) => sum + s.duration, 0);
+  lines.push('');
+  lines.push(`Celkem: ${total % 1 === 0 ? total : total.toFixed(1)} hodin (${filtered.length} směn)`);
+  const text = lines.join('\n');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); showToast(); } catch(e) { alert('Text:\n\n' + text); }
+  document.body.removeChild(ta);
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function clearAll() {
+  if (confirm('Opravdu smazat VŠECHNY záznamy? Tato akce je nevratná.')) {
+    shifts = [];
+    save();
+    updateAll();
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+updateAll();
+</script>
+</body>
+</html>

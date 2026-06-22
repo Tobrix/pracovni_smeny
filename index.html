@@ -8,659 +8,663 @@
 <meta name="apple-mobile-web-app-title" content="Směny">
 <title>Směny</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F4F4F6;--surface:#FFFFFF;--accent:#3B5BDB;--accent2:#E8ECFD;
+  --text:#111827;--muted:#6B7280;--border:#E4E4E7;
+  --danger:#DC2626;--danger-bg:#FEF2F2;
+  --success:#16A34A;--success-bg:#F0FDF4;
+  --warn:#D97706;--warn-bg:#FFFBEB;
+  --planned:#7C3AED;--planned-bg:#F5F3FF;
+  --radius:14px;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px)
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
 
-  :root {
-    --bg: #F7F6F2;
-    --surface: #FFFFFF;
-    --accent: #2563EB;
-    --accent-light: #EFF6FF;
-    --text: #1A1A1A;
-    --muted: #6B7280;
-    --border: #E5E5E0;
-    --danger: #DC2626;
-    --danger-light: #FEF2F2;
-    --success: #16A34A;
-    --success-light: #F0FDF4;
-    --radius: 14px;
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px 10px;padding-top:calc(var(--safe-top) + 12px);position:sticky;top:0;z-index:20}
+.hdr-row{display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:-.4px}
+.hdr-badge{background:var(--accent2);color:var(--accent);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-sub{font-size:12px;color:var(--muted);margin-top:3px}
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-  }
+/* CONTENT */
+.content{flex:1;padding:12px 12px calc(var(--safe-bot) + 72px);display:flex;flex-direction:column;gap:10px;overflow-x:hidden}
 
-  /* Header */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px 12px;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  .header-badge {
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-  .header-sub { font-size: 13px; color: var(--muted); }
+/* CARD */
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 
-  /* Main content */
-  .content { flex: 1; padding: 16px 16px calc(var(--safe-bottom) + 80px); display: flex; flex-direction: column; gap: 12px; }
+/* FORM */
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;height:42px;border:1.5px solid var(--border);border-radius:10px;
+  padding:0 12px;font-size:15px;color:var(--text);background:var(--bg);
+  font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;
+  display:block
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
+.field textarea{height:auto;min-height:60px;padding:10px 12px;resize:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-  /* Add shift card */
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    padding: 16px;
-  }
-  .card-title {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--muted);
-    margin-bottom: 14px;
-  }
+/* DURATION PREVIEW */
+.dur-preview{background:var(--accent2);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--accent);font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px}
+.dur-preview.hidden{display:none}
+.dur-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
 
-  .field { margin-bottom: 12px; }
-  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-  .field input {
-    width: 100%;
-    height: 44px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 0 14px;
-    font-size: 16px;
-    color: var(--text);
-    background: var(--bg);
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .field input:focus { border-color: var(--accent); background: white; }
+/* BUTTONS */
+.btn{width:100%;height:48px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{opacity:.82;transform:scale(.98)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger-outline{background:none;color:var(--danger);border:1.5px solid var(--danger)}
+.btn-sm{height:36px;font-size:13px;border-radius:9px}
 
-  .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-bot) + 80px);left:50%;transform:translateX(-50%) translateY(16px);background:#111;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  .duration-preview {
-    background: var(--accent-light);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    color: var(--accent);
-    font-weight: 600;
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 40px;
-  }
-  .duration-preview.hidden { display: none; }
-  .duration-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:90dvh;overflow-y:auto;transform:translateY(40px);transition:transform .25s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.modal-actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.modal-btn{width:100%;height:48px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none}
+.modal-btn-primary{background:var(--accent);color:#fff}
+.modal-btn-danger{background:var(--danger);color:#fff}
+.modal-btn-cancel{background:var(--bg);color:var(--text)}
 
-  .btn-add {
-    width: 100%;
-    height: 50px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
-    font-family: inherit;
-    transition: opacity 0.15s, transform 0.1s;
-    -webkit-appearance: none;
-  }
-  .btn-add:active { opacity: 0.85; transform: scale(0.98); }
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:9px;background:none;cursor:pointer;font-size:16px;-webkit-appearance:none;display:flex;align-items:center;justify-content:center}
+.cal-month{font-size:15px;font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal-dow{font-size:10px;font-weight:600;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13px;font-weight:500;cursor:pointer;position:relative;transition:background .12s}
+.cal-day:empty{cursor:default}
+.cal-day.other-month{color:var(--border)}
+.cal-day.today{font-weight:700;color:var(--accent)}
+.cal-day.has-planned::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--planned)}
+.cal-day.has-done::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--success)}
+.cal-day.has-planned.has-done::after{background:linear-gradient(90deg,var(--planned) 50%,var(--success) 50%)}
+.cal-day.selected{background:var(--accent);color:#fff!important;font-weight:700}
+.cal-day.selected::after{background:#fff!important}
 
-  /* Shifts list */
-  .shifts-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2px;
-  }
-  .shifts-header .card-title { margin-bottom: 0; }
-  .shifts-count {
-    font-size: 12px;
-    color: var(--muted);
-  }
+/* SHIFT ITEMS */
+.shift-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.shift-item:last-child{border-bottom:none;padding-bottom:0}
+.shift-item:first-child{padding-top:0}
+.shift-badge{width:44px;height:44px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.shift-badge.planned{background:var(--planned-bg)}
+.shift-badge.done{background:var(--success-bg)}
+.shift-badge.active-now{background:var(--warn-bg)}
+.shift-badge .day{font-size:18px;font-weight:700;line-height:1}
+.shift-badge .mon{font-size:10px;font-weight:500;margin-top:1px}
+.shift-badge.planned .day,.shift-badge.planned .mon{color:var(--planned)}
+.shift-badge.done .day,.shift-badge.done .mon{color:var(--success)}
+.shift-badge.active-now .day,.shift-badge.active-now .mon{color:var(--warn)}
+.shift-info{flex:1;min-width:0}
+.shift-time{font-size:14px;font-weight:600}
+.shift-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.shift-actions{display:flex;gap:6px;flex-shrink:0}
+.icon-btn{width:34px;height:34px;border:none;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;-webkit-appearance:none}
+.icon-btn:active{opacity:.7}
+.icon-btn.check{background:var(--success-bg)}
+.icon-btn.edit{background:var(--accent2)}
+.icon-btn.del{background:var(--danger-bg)}
 
-  .empty-state {
-    text-align: center;
-    padding: 32px 16px;
-    color: var(--muted);
-  }
-  .empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
-  .empty-state p { font-size: 14px; }
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pill.planned{background:var(--planned-bg);color:var(--planned)}
+.pill.done{background:var(--success-bg);color:var(--success)}
+.pill.active{background:var(--warn-bg);color:var(--warn)}
 
-  .shift-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .shift-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .shift-item:first-child { padding-top: 0; }
+/* SUMMARY BOXES */
+.sum-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sum-box{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
+.sum-box .val{font-size:22px;font-weight:700}
+.sum-box .lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
 
-  .shift-date-badge {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 8px 10px;
-    text-align: center;
-    min-width: 52px;
-    flex-shrink: 0;
-  }
-  .shift-date-day { font-size: 20px; font-weight: 700; line-height: 1; }
-  .shift-date-month { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+/* PERIOD BUTTONS */
+.period-row{display:flex;gap:6px;margin-bottom:12px}
+.period-btn{flex:1;height:34px;border:1.5px solid var(--border);border-radius:8px;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;-webkit-appearance:none;transition:all .12s}
+.period-btn.active{border-color:var(--accent);background:var(--accent2);color:var(--accent)}
 
-  .shift-info { flex: 1; min-width: 0; }
-  .shift-time { font-size: 15px; font-weight: 600; }
-  .shift-duration { font-size: 13px; color: var(--muted); margin-top: 2px; }
+/* SECTION VISIBILITY */
+.section{display:none;flex-direction:column;gap:10px}
+.section.active{display:flex}
 
-  .shift-delete {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: var(--danger-light);
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 16px;
-    transition: opacity 0.15s;
-    -webkit-appearance: none;
-  }
-  .shift-delete:active { opacity: 0.7; }
+/* TAB BAR */
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bot);z-index:20}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 0 7px;gap:3px;cursor:pointer;border:none;background:none;font-family:inherit;-webkit-appearance:none}
+.tab-icon{font-size:20px;line-height:1}
+.tab-lbl{font-size:10px;font-weight:500;color:var(--muted)}
+.tab.active .tab-lbl{color:var(--accent);font-weight:700}
 
-  /* Summary */
-  .summary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .summary-box {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 12px 14px;
-    text-align: center;
-  }
-  .summary-box .val { font-size: 22px; font-weight: 700; color: var(--text); }
-  .summary-box .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+/* EMPTY */
+.empty{text-align:center;padding:28px 12px;color:var(--muted)}
+.empty-icon{font-size:34px;margin-bottom:8px}
+.empty p{font-size:13px;line-height:1.6}
 
-  .btn-copy {
-    width: 100%;
-    height: 50px;
-    background: var(--success);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.15s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    -webkit-appearance: none;
-  }
-  .btn-copy:active { opacity: 0.85; transform: scale(0.98); }
+/* EXPORT TEXT PREVIEW */
+.export-preview{background:var(--bg);border-radius:10px;padding:12px;font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;word-break:break-word;font-family:monospace;border:1px solid var(--border);max-height:240px;overflow-y:auto;margin-bottom:10px}
 
-  .copy-toast {
-    position: fixed;
-    bottom: calc(var(--safe-bottom) + 90px);
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #1A1A1A;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 100;
-  }
-  .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* Bottom tab bar */
-  .tab-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding-bottom: var(--safe-bottom);
-  }
-  .tab {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0 8px;
-    gap: 4px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-    -webkit-appearance: none;
-  }
-  .tab-icon { font-size: 22px; }
-  .tab-label { font-size: 10px; font-weight: 500; color: var(--muted); }
-  .tab.active .tab-icon { font-size: 22px; }
-  .tab.active .tab-label { color: var(--accent); font-weight: 600; }
-
-  /* Section visibility */
-  .section { display: none; }
-  .section.active { display: flex; flex-direction: column; gap: 12px; }
-
-  /* Note field */
-  .field textarea {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 16px;
-    color: var(--text);
-    background: var(--bg);
-    font-family: inherit;
-    outline: none;
-    resize: none;
-    min-height: 80px;
-    transition: border-color 0.15px;
-  }
-  .field textarea:focus { border-color: var(--accent); background: white; }
-
-  /* Danger zone */
-  .btn-danger {
-    width: 100%;
-    height: 46px;
-    background: none;
-    color: var(--danger);
-    border: 1.5px solid var(--danger);
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    -webkit-appearance: none;
-    transition: background 0.15s;
-  }
-  .btn-danger:active { background: var(--danger-light); }
-
-  .period-selector {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .period-btn {
-    flex: 1;
-    height: 36px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    background: none;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    -webkit-appearance: none;
-    transition: all 0.15s;
-  }
-  .period-btn.active {
-    border-color: var(--accent);
-    background: var(--accent-light);
-    color: var(--accent);
-  }
+/* CONFIRM FINISH MODAL extra */
+.time-big{font-size:32px;font-weight:700;text-align:center;padding:10px 0;color:var(--accent);letter-spacing:-1px}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
+<div class="hdr">
+  <div class="hdr-row">
     <h1>Směny</h1>
-    <span class="header-badge" id="headerBadge">0 hod</span>
+    <span class="hdr-badge" id="hdrBadge">0 hod</span>
   </div>
-  <div class="header-sub" id="headerSub">Tento měsíc</div>
+  <div class="hdr-sub" id="hdrSub">Tento měsíc</div>
 </div>
 
 <div class="content">
 
-  <!-- ADD SECTION -->
-  <div class="section active" id="sec-add">
+  <!-- CALENDAR TAB -->
+  <div class="section active" id="sec-cal">
     <div class="card">
-      <div class="card-title">Přidat směnu</div>
-
-      <div class="field">
-        <label>Datum</label>
-        <input type="date" id="inDate">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+        <span class="cal-month" id="calTitle"></span>
+        <button class="cal-nav-btn" onclick="calNext()">›</button>
       </div>
-
-      <div class="time-row">
-        <div class="field">
-          <label>Začátek</label>
-          <input type="time" id="inStart">
-        </div>
-        <div class="field">
-          <label>Konec</label>
-          <input type="time" id="inEnd">
-        </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="card" id="calDayCard">
+      <div class="card-title" id="calDayTitle">Vyberte den</div>
+      <div id="calDayContent"><div class="empty"><p>Klepněte na den v kalendáři.</p></div></div>
+      <div id="calDayAdd" style="margin-top:10px;display:none">
+        <button class="btn btn-primary btn-sm" onclick="openAddForDay()">＋ Přidat směnu na tento den</button>
       </div>
-
-      <div id="durationPreview" class="duration-preview hidden">
-        <div class="duration-dot"></div>
-        <span id="durationText"></span>
-      </div>
-
-      <div class="field" style="margin-top:12px; margin-bottom:0;">
-        <label>Poznámka (nepovinné)</label>
-        <textarea id="inNote" placeholder="Např. pokladna, sklad..."></textarea>
-      </div>
-
-      <button class="btn-add" style="margin-top:14px;" onclick="addShift()">Přidat směnu</button>
     </div>
   </div>
 
-  <!-- LIST SECTION -->
+  <!-- LIST TAB -->
   <div class="section" id="sec-list">
     <div class="card">
-      <div class="shifts-header">
-        <div class="card-title">Záznamy</div>
-        <span class="shifts-count" id="shiftsCount"></span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin-bottom:0">Plánované</div>
+        <span style="font-size:11px;color:var(--muted)" id="plannedCount"></span>
       </div>
-      <div id="shiftsList"></div>
+      <div id="plannedList"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin-bottom:0">Odpracované</div>
+        <span style="font-size:11px;color:var(--muted)" id="doneCount"></span>
+      </div>
+      <div id="doneList"></div>
     </div>
   </div>
 
-  <!-- EXPORT SECTION -->
+  <!-- EXPORT TAB -->
   <div class="section" id="sec-export">
     <div class="card">
-      <div class="card-title">Přehled & export</div>
-
-      <div class="period-selector">
-        <button class="period-btn active" id="periodAll" onclick="setPeriod('all')">Vše</button>
-        <button class="period-btn" id="periodMonth" onclick="setPeriod('month')">Tento měsíc</button>
-        <button class="period-btn" id="periodWeek" onclick="setPeriod('week')">Tento týden</button>
+      <div class="card-title">Filtr období</div>
+      <div class="period-row">
+        <button class="period-btn active" id="pAll" onclick="setPeriod('all')">Vše</button>
+        <button class="period-btn" id="pMonth" onclick="setPeriod('month')">Měsíc</button>
+        <button class="period-btn" id="pWeek" onclick="setPeriod('week')">Týden</button>
       </div>
-
-      <div class="summary-row">
-        <div class="summary-box">
-          <div class="val" id="sumShifts">0</div>
-          <div class="lbl">Směn</div>
-        </div>
-        <div class="summary-box">
-          <div class="val" id="sumHours">0</div>
-          <div class="lbl">Hodin celkem</div>
-        </div>
+      <div class="sum-row">
+        <div class="sum-box"><div class="val" id="sumShifts">0</div><div class="lbl">Směn</div></div>
+        <div class="sum-box"><div class="val" id="sumHours">0</div><div class="lbl">Hodin</div></div>
       </div>
-
-      <button class="btn-copy" onclick="copyForWhatsApp()">
-        <span>📋</span> Kopírovat pro WhatsApp
-      </button>
     </div>
-
     <div class="card">
-      <div class="card-title">Nebezpečná zóna</div>
-      <button class="btn-danger" onclick="clearAll()">Smazat všechny záznamy</button>
+      <div class="card-title">Náhled zprávy</div>
+      <div class="export-preview" id="exportPreview">—</div>
+      <button class="btn btn-success" onclick="copyMsg()">📋 Kopírovat pro WhatsApp</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Správa dat</div>
+      <button class="btn btn-danger-outline" onclick="confirmClearAll()">Smazat všechny záznamy</button>
     </div>
   </div>
 
 </div>
 
-<!-- Tab bar -->
-<div class="tab-bar">
-  <button class="tab active" id="tab-add" onclick="switchTab('add')">
-    <span class="tab-icon">＋</span>
-    <span class="tab-label">Přidat</span>
+<!-- TAB BAR -->
+<div class="tabbar">
+  <button class="tab active" id="tab-cal" onclick="switchTab('cal')">
+    <span class="tab-icon">📅</span>
+    <span class="tab-lbl">Kalendář</span>
   </button>
   <button class="tab" id="tab-list" onclick="switchTab('list')">
     <span class="tab-icon">📋</span>
-    <span class="tab-label">Seznam</span>
+    <span class="tab-lbl">Přehled</span>
   </button>
   <button class="tab" id="tab-export" onclick="switchTab('export')">
     <span class="tab-icon">📤</span>
-    <span class="tab-label">Export</span>
+    <span class="tab-lbl">Export</span>
   </button>
 </div>
 
-<div class="copy-toast" id="toast">✅ Zkopírováno do schránky</div>
+<div class="toast" id="toast"></div>
+
+<!-- GENERIC MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-sub" id="modalSub"></div>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
 
 <script>
-let shifts = JSON.parse(localStorage.getItem('shifts') || '[]');
-let currentPeriod = 'all';
+// ── DATA ──────────────────────────────────────────────────────────────────────
+let planned = JSON.parse(localStorage.getItem('planned')||'[]');
+let done    = JSON.parse(localStorage.getItem('done')||'[]');
 
+function savePlanned(){ localStorage.setItem('planned', JSON.stringify(planned)) }
+function saveDone(){ localStorage.setItem('done', JSON.stringify(done)) }
+
+const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+const MONTHS_GEN = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
 const MONTHS_SHORT = ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'];
-const MONTHS_LONG = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+const DOW = ['Po','Út','St','Čt','Pá','So','Ne'];
+const pad = n => String(n).padStart(2,'0');
 
-function save() { localStorage.setItem('shifts', JSON.stringify(shifts)); }
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function calcDur(s,e){
+  const [sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);
+  let m=(eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
+}
+function fmtDur(h){
+  const w=Math.floor(h),m=Math.round((h-w)*60);
+  if(m===0) return w+' hod';
+  if(w===0) return m+' min';
+  return w+' hod '+m+' min';
+}
+function fmtDate(ds){
+  const[y,m,d]=ds.split('-').map(Number); return d+'.'+m+'.'+y;
+}
+function todayStr(){
+  const n=new Date(); return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());
+}
+function parseDate(ds){ const[y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d); }
 
-function calcDuration(start, end) {
-  const [sh, sm] = start.split(':').map(Number);
-  const [eh, em] = end.split(':').map(Number);
-  let mins = (eh * 60 + em) - (sh * 60 + sm);
-  if (mins < 0) mins += 24 * 60;
-  return mins / 60;
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(title, sub, body, actions){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalSub').textContent = sub||'';
+  document.getElementById('modalBody').innerHTML = body||'';
+  const ac = document.getElementById('modalActions');
+  ac.innerHTML='';
+  (actions||[]).forEach(a=>{
+    const b=document.createElement('button');
+    b.className='modal-btn '+a.cls;
+    b.textContent=a.label;
+    b.onclick=()=>{ closeModal(); a.fn && a.fn(); };
+    ac.appendChild(b);
+  });
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+document.getElementById('modalOverlay').addEventListener('click', e=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); });
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2400);
 }
 
-function formatDuration(h) {
-  const whole = Math.floor(h);
-  const mins = Math.round((h - whole) * 60);
-  if (mins === 0) return whole + ' hod';
-  if (whole === 0) return mins + ' min';
-  return whole + ' hod ' + mins + ' min';
+// ── CALENDAR ─────────────────────────────────────────────────────────────────
+let calYear, calMonth, calSelected;
+(()=>{ const n=new Date(); calYear=n.getFullYear(); calMonth=n.getMonth(); calSelected=todayStr(); })();
+
+function renderCal(){
+  const grid=document.getElementById('calGrid');
+  document.getElementById('calTitle').textContent = MONTHS[calMonth]+' '+calYear;
+  // DOW headers
+  let html = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1);
+  let startDow=(first.getDay()+6)%7; // Mon=0
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=todayStr();
+  // Build set of dates with shifts
+  const plannedDates=new Set(planned.map(s=>s.date));
+  const doneDates=new Set(done.map(s=>s.date));
+  // Empty cells
+  for(let i=0;i<startDow;i++) html+=`<div class="cal-day"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=calYear+'-'+pad(calMonth+1)+'-'+pad(d);
+    let cls='cal-day';
+    if(ds===today) cls+=' today';
+    if(ds===calSelected) cls+=' selected';
+    if(plannedDates.has(ds)) cls+=' has-planned';
+    if(doneDates.has(ds)) cls+=' has-done';
+    html+=`<div class="${cls}" onclick="selectDay('${ds}')">${d}</div>`;
+  }
+  grid.innerHTML=html;
+  renderDayCard();
+}
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(); }
+
+function selectDay(ds){
+  calSelected=ds;
+  renderCal();
 }
 
-function formatDate(dateStr) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return d + '.' + m + '.';
+function renderDayCard(){
+  const ds=calSelected;
+  if(!ds){ document.getElementById('calDayContent').innerHTML='<div class="empty"><p>Klepněte na den.</p></div>'; return; }
+  const [y,m,d]=ds.split('-').map(Number);
+  document.getElementById('calDayTitle').textContent = d+'. '+MONTHS_GEN[m-1]+' '+y;
+  const dayPlanned=planned.filter(s=>s.date===ds);
+  const dayDone=done.filter(s=>s.date===ds);
+  let html='';
+  if(dayPlanned.length===0&&dayDone.length===0){
+    html='<div class="empty" style="padding:16px 0"><p>Žádná směna.</p></div>';
+  }
+  dayPlanned.forEach((s,i)=>{
+    const isToday=ds===todayStr();
+    const now=new Date(); const nowMins=now.getHours()*60+now.getMinutes();
+    const [sh,sm]=s.start.split(':').map(Number);
+    const [eh,em]=s.end.split(':').map(Number);
+    const inProgress=isToday&&nowMins>=sh*60+sm&&nowMins<eh*60+em;
+    const badgeCls=inProgress?'active-now':'planned';
+    const statusLabel=inProgress?'Právě probíhá':'Plánovaná';
+    html+=`<div class="shift-item">
+      <div class="shift-badge ${badgeCls}"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+      <div class="shift-info">
+        <div class="shift-time">${s.start} – ${s.end}</div>
+        <div class="shift-meta"><span class="pill ${inProgress?'active':'planned'}">${statusLabel}</span>${s.note?' · '+s.note:''}</div>
+      </div>
+      <div class="shift-actions">
+        <button class="icon-btn check" onclick="openConfirmFinish(${planned.indexOf(s)})" title="Potvrdit">✔</button>
+        <button class="icon-btn edit" onclick="openEditPlanned(${planned.indexOf(s)})" title="Upravit">✏</button>
+        <button class="icon-btn del" onclick="confirmDeletePlanned(${planned.indexOf(s)})" title="Smazat">✕</button>
+      </div>
+    </div>`;
+  });
+  dayDone.forEach(s=>{
+    const dur=calcDur(s.start,s.end);
+    html+=`<div class="shift-item">
+      <div class="shift-badge done"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+      <div class="shift-info">
+        <div class="shift-time">${s.start} – ${s.end}</div>
+        <div class="shift-meta"><span class="pill done">Odpracovaná</span> · ${fmtDur(dur)}${s.note?' · '+s.note:''}</div>
+      </div>
+      <div class="shift-actions">
+        <button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')" title="Smazat">✕</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('calDayContent').innerHTML=html;
+  document.getElementById('calDayAdd').style.display='block';
 }
 
-// Set today's date as default
-const today = new Date();
-const pad = n => String(n).padStart(2, '0');
-document.getElementById('inDate').value = today.getFullYear() + '-' + pad(today.getMonth()+1) + '-' + pad(today.getDate());
+// ── ADD SHIFT ─────────────────────────────────────────────────────────────────
+let addTargetDate=null;
+function openAddForDay(){
+  addTargetDate=calSelected||todayStr();
+  const[y,m,d]=addTargetDate.split('-').map(Number);
+  openModal(
+    'Přidat směnu',
+    d+'. '+MONTHS_GEN[m-1]+' '+y,
+    `<div class="two-col">
+      <div class="field"><label>Začátek</label><input type="time" id="mStart" onchange="mUpdateDur()"></div>
+      <div class="field"><label>Konec</label><input type="time" id="mEnd" onchange="mUpdateDur()"></div>
+    </div>
+    <div id="mDurPreview" class="dur-preview hidden"><div class="dur-dot"></div><span id="mDurText"></span></div>
+    <div class="field" style="margin-top:10px"><label>Poznámka (nepovinné)</label><textarea id="mNote" placeholder="Pokladna, sklad..."></textarea></div>`,
+    [
+      {label:'Přidat',cls:'modal-btn-primary',fn:doAddShift},
+      {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+    ]
+  );
+}
+function mUpdateDur(){
+  const s=document.getElementById('mStart')?.value;
+  const e=document.getElementById('mEnd')?.value;
+  const p=document.getElementById('mDurPreview');
+  if(!p)return;
+  if(s&&e){ document.getElementById('mDurText').textContent=fmtDur(calcDur(s,e)); p.classList.remove('hidden'); }
+  else p.classList.add('hidden');
+}
+function doAddShift(){
+  const start=document.getElementById('mStart')?.value||'';
+  const end=document.getElementById('mEnd')?.value||'';
+  const note=document.getElementById('mNote')?.value.trim()||'';
+  if(!start||!end){ openModal('Chybí čas','Vyplň začátek i konec směny.','',[{label:'OK',cls:'modal-btn-cancel',fn:()=>setTimeout(openAddForDay,200)}]); return; }
+  planned.push({date:addTargetDate,start,end,note,id:Date.now().toString()});
+  planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  savePlanned(); updateAll(); showToast('✅ Směna přidána');
+}
 
-// Live duration preview
-function updatePreview() {
-  const s = document.getElementById('inStart').value;
-  const e = document.getElementById('inEnd').value;
-  const preview = document.getElementById('durationPreview');
-  if (s && e) {
-    const h = calcDuration(s, e);
-    document.getElementById('durationText').textContent = formatDuration(h);
-    preview.classList.remove('hidden');
+// ── EDIT PLANNED ──────────────────────────────────────────────────────────────
+function openEditPlanned(idx){
+  const s=planned[idx];
+  openModal(
+    'Upravit plánovanou směnu','',
+    `<div class="two-col">
+      <div class="field"><label>Začátek</label><input type="time" id="eStart" value="${s.start}" onchange="eUpdateDur()"></div>
+      <div class="field"><label>Konec</label><input type="time" id="eEnd" value="${s.end}" onchange="eUpdateDur()"></div>
+    </div>
+    <div id="eDurPreview" class="dur-preview"><div class="dur-dot"></div><span id="eDurText">${fmtDur(calcDur(s.start,s.end))}</span></div>
+    <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="eNote">${s.note||''}</textarea></div>`,
+    [
+      {label:'Uložit',cls:'modal-btn-primary',fn:()=>doEditPlanned(idx)},
+      {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+    ]
+  );
+}
+function eUpdateDur(){
+  const s=document.getElementById('eStart')?.value;
+  const e=document.getElementById('eEnd')?.value;
+  if(s&&e) document.getElementById('eDurText').textContent=fmtDur(calcDur(s,e));
+}
+function doEditPlanned(idx){
+  const start=document.getElementById('eStart')?.value||'';
+  const end=document.getElementById('eEnd')?.value||'';
+  const note=document.getElementById('eNote')?.value.trim()||'';
+  if(!start||!end){ openModal('Chybí čas','Vyplň začátek i konec.','',[{label:'OK',cls:'modal-btn-cancel',fn:null}]); return; }
+  planned[idx]={...planned[idx],start,end,note};
+  savePlanned(); updateAll(); showToast('✏ Směna upravena');
+}
+
+// ── CONFIRM FINISH ────────────────────────────────────────────────────────────
+function openConfirmFinish(idx){
+  const s=planned[idx];
+  const now=new Date();
+  const nowTime=pad(now.getHours())+':'+pad(now.getMinutes());
+  openModal(
+    'Potvrdit odpracování','Zkontroluj skutečný čas.',
+    `<div class="two-col">
+      <div class="field"><label>Skutečný začátek</label><input type="time" id="fStart" value="${s.start}" onchange="fUpdateDur()"></div>
+      <div class="field"><label>Skutečný konec</label><input type="time" id="fEnd" value="${nowTime}" onchange="fUpdateDur()"></div>
+    </div>
+    <div id="fDurPreview" class="dur-preview"><div class="dur-dot"></div><span id="fDurText">${fmtDur(calcDur(s.start,nowTime))}</span></div>
+    <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="fNote">${s.note||''}</textarea></div>`,
+    [
+      {label:'✔ Potvrdit jako odpracovanou',cls:'modal-btn-primary',fn:()=>doFinish(idx)},
+      {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+    ]
+  );
+}
+function fUpdateDur(){
+  const s=document.getElementById('fStart')?.value;
+  const e=document.getElementById('fEnd')?.value;
+  if(s&&e) document.getElementById('fDurText').textContent=fmtDur(calcDur(s,e));
+}
+function doFinish(idx){
+  const start=document.getElementById('fStart')?.value||'';
+  const end=document.getElementById('fEnd')?.value||'';
+  const note=document.getElementById('fNote')?.value.trim()||'';
+  if(!start||!end){ openModal('Chybí čas','Vyplň začátek i konec.','',[{label:'OK',cls:'modal-btn-cancel',fn:null}]); return; }
+  const s=planned[idx];
+  done.push({date:s.date,start,end,note,id:Date.now().toString()});
+  done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  planned.splice(idx,1);
+  savePlanned(); saveDone(); updateAll();
+  showToast('✅ Směna potvrzena');
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────────
+function confirmDeletePlanned(idx){
+  openModal('Smazat plánovanou směnu?','Tato akce je nevratná.','',[
+    {label:'Smazat',cls:'modal-btn-danger',fn:()=>{ planned.splice(idx,1); savePlanned(); updateAll(); showToast('Smazáno'); }},
+    {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+  ]);
+}
+function confirmDeleteDone(id){
+  openModal('Smazat odpracovanou směnu?','Tato akce je nevratná.','',[
+    {label:'Smazat',cls:'modal-btn-danger',fn:()=>{ done=done.filter(s=>s.id!==id); saveDone(); updateAll(); showToast('Smazáno'); }},
+    {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+  ]);
+}
+function confirmClearAll(){
+  openModal('Smazat vše?','Smažou se VŠECHNY záznamy. Tato akce je nevratná.','',[
+    {label:'Smazat vše',cls:'modal-btn-danger',fn:()=>{ planned=[]; done=[]; savePlanned(); saveDone(); updateAll(); showToast('Vše smazáno'); }},
+    {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
+  ]);
+}
+
+// ── LIST TAB ──────────────────────────────────────────────────────────────────
+function renderList(){
+  const pl=document.getElementById('plannedList');
+  const dl=document.getElementById('doneList');
+  document.getElementById('plannedCount').textContent = planned.length ? planned.length+' záznam'+(planned.length===1?'':planned.length<5?'y':'ů') : '';
+  document.getElementById('doneCount').textContent = done.length ? done.length+' záznam'+(done.length===1?'':done.length<5?'y':'ů') : '';
+
+  if(planned.length===0){
+    pl.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Žádné plánované směny.</p></div>';
   } else {
-    preview.classList.add('hidden');
+    pl.innerHTML=planned.map((s,i)=>{
+      const[y,m,d]=s.date.split('-').map(Number);
+      return `<div class="shift-item">
+        <div class="shift-badge planned"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+        <div class="shift-info">
+          <div class="shift-time">${s.start} – ${s.end}</div>
+          <div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div>
+        </div>
+        <div class="shift-actions">
+          <button class="icon-btn check" onclick="openConfirmFinish(${i})">✔</button>
+          <button class="icon-btn del" onclick="confirmDeletePlanned(${i})">✕</button>
+        </div>
+      </div>`;
+    }).join('');
   }
-}
-document.getElementById('inStart').addEventListener('input', updatePreview);
-document.getElementById('inEnd').addEventListener('input', updatePreview);
 
-function addShift() {
-  const date = document.getElementById('inDate').value;
-  const start = document.getElementById('inStart').value;
-  const end = document.getElementById('inEnd').value;
-  const note = document.getElementById('inNote').value.trim();
-
-  if (!date || !start || !end) {
-    alert('Vyplň prosím datum, začátek a konec směny.');
-    return;
-  }
-
-  const duration = calcDuration(start, end);
-  shifts.push({ date, start, end, duration, note });
-  shifts.sort((a, b) => a.date.localeCompare(b.date) || a.start.localeCompare(b.start));
-  save();
-  updateAll();
-
-  // Clear time fields, keep date
-  document.getElementById('inStart').value = '';
-  document.getElementById('inEnd').value = '';
-  document.getElementById('inNote').value = '';
-  document.getElementById('durationPreview').classList.add('hidden');
-
-  // Switch to list to confirm
-  switchTab('list');
-}
-
-function deleteShift(idx) {
-  if (confirm('Smazat tuto směnu?')) {
-    shifts.splice(idx, 1);
-    save();
-    updateAll();
+  if(done.length===0){
+    dl.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Žádné odpracované směny.</p></div>';
+  } else {
+    dl.innerHTML=done.map(s=>{
+      const[y,m,d]=s.date.split('-').map(Number);
+      const dur=calcDur(s.start,s.end);
+      return `<div class="shift-item">
+        <div class="shift-badge done"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+        <div class="shift-info">
+          <div class="shift-time">${s.start} – ${s.end}</div>
+          <div class="shift-meta">${fmtDur(dur)}${s.note?' · '+s.note:''}</div>
+        </div>
+        <div class="shift-actions">
+          <button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')">✕</button>
+        </div>
+      </div>`;
+    }).join('');
   }
 }
 
-function getFiltered() {
-  if (currentPeriod === 'all') return shifts;
-  const now = new Date();
-  return shifts.filter(s => {
-    const d = new Date(s.date);
-    if (currentPeriod === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    if (currentPeriod === 'week') {
-      const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay() + 1);
-      startOfWeek.setHours(0,0,0,0);
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      return d >= startOfWeek && d <= endOfWeek;
+// ── EXPORT TAB ────────────────────────────────────────────────────────────────
+let exportPeriod='all';
+function setPeriod(p){
+  exportPeriod=p;
+  ['All','Month','Week'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
+  document.getElementById('p'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
+  renderExport();
+}
+function getFiltered(){
+  if(exportPeriod==='all') return done;
+  const now=new Date();
+  return done.filter(s=>{
+    const d=parseDate(s.date);
+    if(exportPeriod==='month') return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+    if(exportPeriod==='week'){
+      const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0);
+      const eow=new Date(sow); eow.setDate(sow.getDate()+6);
+      return d>=sow&&d<=eow;
     }
     return true;
   });
 }
-
-function renderList() {
-  const list = document.getElementById('shiftsList');
-  const count = document.getElementById('shiftsCount');
-  if (shifts.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><p>Zatím žádné směny.<br>Přidej první na záložce Přidat.</p></div>';
-    count.textContent = '';
-    return;
-  }
-  count.textContent = shifts.length + ' záznam' + (shifts.length === 1 ? '' : shifts.length < 5 ? 'y' : 'ů');
-  list.innerHTML = shifts.map((s, i) => {
-    const [y, m, d] = s.date.split('-').map(Number);
-    return `<div class="shift-item">
-      <div class="shift-date-badge">
-        <div class="shift-date-day">${d}</div>
-        <div class="shift-date-month">${MONTHS_SHORT[m-1]}</div>
-      </div>
-      <div class="shift-info">
-        <div class="shift-time">${s.start} – ${s.end}</div>
-        <div class="shift-duration">${formatDuration(s.duration)}${s.note ? ' · ' + s.note : ''}</div>
-      </div>
-      <button class="shift-delete" onclick="deleteShift(${i})" aria-label="Smazat">🗑</button>
-    </div>`;
-  }).join('');
-}
-
-function renderSummary() {
-  const filtered = getFiltered();
-  const total = filtered.reduce((sum, s) => sum + s.duration, 0);
-  document.getElementById('sumShifts').textContent = filtered.length;
-  document.getElementById('sumHours').textContent = total % 1 === 0 ? total : total.toFixed(1);
-}
-
-function renderHeader() {
-  const now = new Date();
-  const thisMonth = shifts.filter(s => {
-    const d = new Date(s.date);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+function buildExportText(){
+  const f=getFiltered();
+  if(f.length===0) return '— žádné záznamy —';
+  const lines=f.map(s=>{
+    const[y,m,d]=s.date.split('-').map(Number);
+    const dur=calcDur(s.start,s.end);
+    const durFmt=dur%1===0?dur:dur.toFixed(1);
+    const jednotka=dur===1?'hodina':dur<5?'hodiny':'hodin';
+    return `${d}.${m}. ${s.start}–${s.end}   ${durFmt} ${jednotka}${s.note?' ('+s.note+')':''}`;
   });
-  const total = thisMonth.reduce((sum, s) => sum + s.duration, 0);
-  document.getElementById('headerBadge').textContent = (total % 1 === 0 ? total : total.toFixed(1)) + ' hod';
-  document.getElementById('headerSub').textContent = MONTHS_LONG[now.getMonth()] + ' ' + now.getFullYear();
-}
-
-function updateAll() {
-  renderList();
-  renderSummary();
-  renderHeader();
-}
-
-function setPeriod(p) {
-  currentPeriod = p;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('period' + p.charAt(0).toUpperCase() + p.slice(1)).classList.add('active');
-  renderSummary();
-}
-
-function copyForWhatsApp() {
-  const filtered = getFiltered();
-  if (filtered.length === 0) {
-    alert('Žádné směny k exportu.');
-    return;
-  }
-  const lines = filtered.map(s => {
-    const [y, m, d] = s.date.split('-').map(Number);
-    const dur = s.duration % 1 === 0 ? s.duration : s.duration.toFixed(1);
-    return `${d}.${m}. ${s.start}-${s.end}....${dur} ${s.duration === 1 ? 'hodina' : s.duration < 5 ? 'hodiny' : 'hodin'}${s.note ? ' (' + s.note + ')' : ''}`;
-  });
-  const total = filtered.reduce((sum, s) => sum + s.duration, 0);
+  const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
+  const totalFmt=total%1===0?total:total.toFixed(1);
   lines.push('');
-  lines.push(`Celkem: ${total % 1 === 0 ? total : total.toFixed(1)} hodin (${filtered.length} směn)`);
-  const text = lines.join('\n');
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
+  lines.push(`Celkem: ${totalFmt} hodin (${f.length} směn)`);
+  return lines.join('\n');
 }
-
-function fallbackCopy(text) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.left = '-9999px';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  try { document.execCommand('copy'); showToast(); } catch(e) { alert('Text:\n\n' + text); }
+function renderExport(){
+  const f=getFiltered();
+  const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
+  document.getElementById('sumShifts').textContent=f.length;
+  document.getElementById('sumHours').textContent=total%1===0?total:total.toFixed(1);
+  document.getElementById('exportPreview').textContent=buildExportText();
+}
+function copyMsg(){
+  const text=buildExportText();
+  if(text==='— žádné záznamy —'){ openModal('Nic k exportu','V tomto období nejsou žádné odpracované směny.','',[{label:'OK',cls:'modal-btn-cancel',fn:null}]); return; }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast('✅ Zkopírováno')).catch(()=>fallbackCopy(text));
+  } else fallbackCopy(text);
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); showToast('✅ Zkopírováno'); }catch(e){ alert(text); }
   document.body.removeChild(ta);
 }
 
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+// ── HEADER ────────────────────────────────────────────────────────────────────
+function renderHeader(){
+  const now=new Date();
+  const thisMonth=done.filter(s=>{ const d=parseDate(s.date); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); });
+  const total=thisMonth.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
+  document.getElementById('hdrBadge').textContent=(total%1===0?total:total.toFixed(1))+' hod';
+  document.getElementById('hdrSub').textContent=MONTHS_GEN[now.getMonth()]+' '+now.getFullYear();
 }
 
-function clearAll() {
-  if (confirm('Opravdu smazat VŠECHNY záznamy? Tato akce je nevratná.')) {
-    shifts = [];
-    save();
-    updateAll();
-  }
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(t){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+t).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='export') renderExport();
+  if(t==='list') renderList();
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('sec-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function updateAll(){
+  renderCal();
+  renderList();
+  renderHeader();
+  renderExport();
 }
-
 updateAll();
 </script>
 </body>

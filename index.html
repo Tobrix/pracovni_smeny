@@ -464,19 +464,17 @@ async function sheetsGet(){
 async function sheetsAdd(item, typ){
   if(!scriptUrl) return;
   try{
-    const r = await fetch(scriptUrl+'?action=add',{
-      method:'POST',
-      mode:'cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        id:item.id,
-        typ,
-        datum:item.date,
-        start:item.start,
-        end:item.end,
-        poznamka:item.note||''
-      })
-    });
+    const params = new URLSearchParams({
+  action:'add',
+  id:item.id,
+  typ:typ,
+  datum:item.date,
+  start:item.start,
+  end:item.end,
+  poznamka:item.note||''
+});
+
+await fetch(scriptUrl + '?' + params);
 
     console.log('ADD status:', r.status);
     console.log(await r.text());
@@ -493,13 +491,18 @@ async function sheetsDelete(id){
 }
 async function sheetsUpdate(item, typ){
   if(!scriptUrl) return;
-  try{
-    await fetch(scriptUrl+'?action=update',{
-      method:'POST', mode:'cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({id:item.id,typ,datum:item.date,start:item.start,end:item.end,poznamka:item.note||''})
-    });
-  }catch(e){}
+
+  const params = new URLSearchParams({
+    action:'update',
+    id:item.id,
+    typ:typ,
+    datum:item.date,
+    start:item.start,
+    end:item.end,
+    poznamka:item.note||''
+  });
+
+  await fetch(scriptUrl + '?' + params);
 }
 
 // ── AUTO SYNC FROM SHEETS ─────────────────────────────────────────────────────

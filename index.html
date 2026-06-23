@@ -464,12 +464,26 @@ async function sheetsGet(){
 async function sheetsAdd(item, typ){
   if(!scriptUrl) return;
   try{
-    await fetch(scriptUrl+'?action=add',{
-      method:'POST', mode:'cors',
+    const r = await fetch(scriptUrl+'?action=add',{
+      method:'POST',
+      mode:'cors',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({id:item.id,typ,datum:item.date,start:item.start,end:item.end,poznamka:item.note||''})
+      body:JSON.stringify({
+        id:item.id,
+        typ,
+        datum:item.date,
+        start:item.start,
+        end:item.end,
+        poznamka:item.note||''
+      })
     });
-  }catch(e){}
+
+    console.log('ADD status:', r.status);
+    console.log(await r.text());
+
+  }catch(e){
+    console.error('ADD ERROR:', e);
+  }
 }
 async function sheetsDelete(id){
   if(!scriptUrl) return;

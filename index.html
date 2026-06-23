@@ -226,7 +226,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 
 <div class="content">
 
-  <!-- CALENDAR TAB -->
   <div class="section active" id="sec-cal">
     <div class="card">
       <div class="cal-nav">
@@ -245,7 +244,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
     </div>
   </div>
 
-  <!-- LIST TAB -->
   <div class="section" id="sec-list">
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -263,7 +261,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
     </div>
   </div>
 
-  <!-- EXPORT TAB -->
   <div class="section" id="sec-export">
     <div class="card">
       <div class="card-title">Filtr období</div>
@@ -288,7 +285,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
     </div>
   </div>
 
-  <!-- SETTINGS TAB -->
   <div class="section" id="sec-settings">
     <div class="sheets-banner" id="sheetsBanner">
       <div class="sheets-banner-icon">📊</div>
@@ -306,7 +302,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
       <div class="card-title">Nastavení propojení</div>
       <div class="info-box" style="margin-bottom:12px">
         <div class="info-box-icon">ℹ️</div>
-        <div>Po vložení URL se data <strong>automaticky načtou</strong> z tabulky při každém spuštění. Každá změna se okamžitě zapíše do tabulky i načte z ní.</div>
+        <div>Po vložení URL se data <strong>automaticky načtou</strong> z tabulky. Každá změna se okamžitě zapíše do tabulky i načte z ní.</div>
       </div>
       <div class="setup-field">
         <label>Google Apps Script URL</label>
@@ -383,7 +379,6 @@ function out(obj) {
 
 </div>
 
-<!-- TAB BAR -->
 <div class="tabbar">
   <button class="tab active" id="tab-cal" onclick="switchTab('cal')">
     <span class="tab-icon">📅</span>
@@ -503,6 +498,7 @@ async function autoSyncFromSheets(silent){
   if(!rows){
     setSyncStatus('err','Chyba spojení');
     if(!silent) showToast('❌ Nepodařilo se načíst data');
+    updateSheetsStatus(false);
     return;
   }
   planned=[]; done=[];
@@ -517,18 +513,12 @@ async function autoSyncFromSheets(silent){
   localStorage.setItem('done',JSON.stringify(done));
   updateAll();
   setSyncStatus('ok','Synchronizováno');
+  updateSheetsStatus(true);
   if(!silent) showToast('✅ Data synchronizována');
 }
 
 async function manualSync(){
   await autoSyncFromSheets(false);
-}
-
-// ── PUSH ALL LOCAL DATA TO SHEETS (first-time sync) ──────────────────────────
-async function pushAllToSheets(){
-  if(!scriptUrl) return;
-  for(const s of planned) await sheetsAdd(s,'planned');
-  for(const s of done) await sheetsAdd(s,'done');
 }
 
 // ── CONNECTION TEST ───────────────────────────────────────────────────────────
@@ -552,8 +542,13 @@ function saveScriptUrl(){
   scriptUrl=document.getElementById('scriptUrl').value.trim();
   localStorage.setItem('scriptUrl',scriptUrl);
   updateSheetsStatus();
-  if(scriptUrl) setSyncStatus('warn','Netestováno');
-  else setSyncStatus('','');
+  if(scriptUrl) {
+    setSyncStatus('syncing', 'Načítám…');
+    // Okamžitá automatická synchronizace hned při zadání/změně URL
+    autoSyncFromSheets(false);
+  } else {
+    setSyncStatus('','');
+  }
 }
 
 function updateSheetsStatus(ok){
@@ -561,7 +556,8 @@ function updateSheetsStatus(ok){
   const txt=document.getElementById('sheetsStatusText');
   if(!scriptUrl){ dot.className='status-dot warn'; txt.textContent='Nepropojeno'; return; }
   if(ok===true){ dot.className='status-dot ok'; txt.textContent='Propojeno'; return; }
-  dot.className='status-dot warn'; txt.textContent='URL nastavena — netestováno';
+  if(ok===false){ dot.className='status-dot err'; txt.textContent='Chyba spojení'; return; }
+  dot.className='status-dot warn'; txt.textContent='URL nastavena';
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
@@ -710,7 +706,7 @@ async function doAddShift(){
   planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('planned',JSON.stringify(planned));
   updateAll(); showToast('✅ Směna přidána');
-  setSyncStatus('syncing','Ukládám…');
+  setSyncStatus('syncing','Ukládám do tabulky…');
   await sheetsAdd(item,'planned');
   setSyncStatus('ok','Synchronizováno');
 }
@@ -740,7 +736,7 @@ async function doEditPlanned(idx){
   planned[idx]={...planned[idx],start,end,note};
   localStorage.setItem('planned',JSON.stringify(planned));
   updateAll(); showToast('✏ Směna upravena');
-  setSyncStatus('syncing','Ukládám…');
+  setSyncStatus('syncing','Aktualizuji v tabulce…');
   await sheetsUpdate(planned[idx],'planned');
   setSyncStatus('ok','Synchronizováno');
 }
@@ -773,7 +769,7 @@ async function doFinish(idx){
   done.push(doneItem);
   done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('done',JSON.stringify(done));
-  setSyncStatus('syncing','Ukládám…');
+  setSyncStatus('syncing','Aktualizuji stavy…');
   await sheetsDelete(s.id);
   planned.splice(idx,1);
   localStorage.setItem('planned',JSON.stringify(planned));
@@ -790,7 +786,7 @@ function confirmDeletePlanned(idx){
       planned.splice(idx,1);
       localStorage.setItem('planned',JSON.stringify(planned));
       updateAll(); showToast('Smazáno');
-      setSyncStatus('syncing','Ukládám…');
+      setSyncStatus('syncing','Mažu z tabulky…');
       await sheetsDelete(id);
       setSyncStatus('ok','Synchronizováno');
     }},
@@ -803,7 +799,7 @@ function confirmDeleteDone(id){
       done=done.filter(s=>s.id!==id);
       localStorage.setItem('done',JSON.stringify(done));
       updateAll(); showToast('Smazáno');
-      setSyncStatus('syncing','Ukládám…');
+      setSyncStatus('syncing','Mažu z tabulky…');
       await sheetsDelete(id);
       setSyncStatus('ok','Synchronizováno');
     }},
@@ -811,13 +807,12 @@ function confirmDeleteDone(id){
   ]);
 }
 function confirmClearAll(){
-  openModal('Smazat vše?','Smažou se VŠECHNY záznamy. Nevratná akce.','',[
+  openModal('Smazat vše?','Smažou se VŠECHNY lokální záznamy. Nevratná akce.','',[
     {label:'Smazat vše',cls:'modal-btn-danger',fn:()=>{
       planned=[]; done=[];
       localStorage.setItem('planned','[]');
       localStorage.setItem('done','[]');
       updateAll(); showToast('Vše smazáno');
-      // Note: toto nesmaže data v tabulce — je nutné smazat ručně v Sheets
     }},
     {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
   ]);
@@ -944,7 +939,6 @@ function updateAll(){
 if(scriptUrl){
   document.getElementById('scriptUrl').value=scriptUrl;
   updateSheetsStatus();
-  // Auto-sync from Sheets on startup
   autoSyncFromSheets(true);
 }
 updateAll();

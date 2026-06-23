@@ -25,13 +25,11 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
 
-/* SYNC BAR */
 .sync-bar{height:3px;background:var(--accent2);position:fixed;top:0;left:0;right:0;z-index:100;overflow:hidden;display:none}
 .sync-bar.active{display:block}
 .sync-bar-fill{height:100%;background:var(--accent);animation:syncprogress 1.2s ease-in-out infinite}
 @keyframes syncprogress{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 
-/* HEADER */
 .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px 10px;padding-top:calc(var(--safe-top) + 12px);position:sticky;top:0;z-index:20}
 .hdr-row{display:flex;align-items:center;justify-content:space-between}
 .hdr h1{font-size:20px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
@@ -46,94 +44,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .sync-dot.syncing{background:var(--warn);animation:pulse .8s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* CONTENT */
 .content{flex:1;padding:12px 12px calc(var(--safe-bot) + 88px);display:flex;flex-direction:column;gap:10px;overflow-x:hidden}
 
-/* CARD */
 .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px}
 .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 
-/* FORM — FIX: time input vertically centered */
 .field{margin-bottom:10px}
 .field label{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:5px}
-
-/* All inputs share this base */
-.field input,
-.field select,
-.field textarea {
-  width:100%;
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  padding:0 12px;
-  font-size:15px;
-  color:var(--text);
-  background:var(--bg);
-  font-family:inherit;
-  outline:none;
-  -webkit-appearance:none;
-  appearance:none;
+.field input,.field select,.field textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:15px;
+  color:var(--text);background:var(--bg);font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;
 }
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
-
-/* Standard text inputs */
-.field input[type="text"],
-.field input[type="url"],
-.field input[type="email"] {
-  height:44px;
-  line-height:44px;
-}
-
-/* TIME INPUT — key fix: use flex centering, not line-height */
-.field input[type="time"] {
-  height:44px;
-  /* Remove line-height trick; use flexbox instead */
-  display:flex;
-  align-items:center;
-  /* iOS Safari needs padding reset */
-  padding-top:0;
-  padding-bottom:0;
-  /* Webkit internal parts alignment */
-  -webkit-align-items:center;
-}
-
-/* Webkit time picker internal part centering */
-.field input[type="time"]::-webkit-datetime-edit {
-  display:flex;
-  align-items:center;
-  height:100%;
-  padding:0;
-}
-.field input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-  display:flex;
-  align-items:center;
-}
-.field input[type="time"]::-webkit-datetime-edit-text,
-.field input[type="time"]::-webkit-datetime-edit-hour-field,
-.field input[type="time"]::-webkit-datetime-edit-minute-field,
-.field input[type="time"]::-webkit-datetime-edit-ampm-field {
-  display:flex;
-  align-items:center;
-}
-
-.field textarea{
-  height:auto;min-height:60px;
-  padding:10px 12px;
-  resize:none;line-height:1.5;
-}
-.field select{
-  height:44px;
-  line-height:44px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px
-}
+.field input[type="text"],.field input[type="url"],.field input[type="email"]{height:44px;line-height:44px;}
+.field input[type="time"]{height:44px;display:flex;align-items:center;padding-top:0;padding-bottom:0;-webkit-align-items:center;}
+.field input[type="time"]::-webkit-datetime-edit{display:flex;align-items:center;height:100%;padding:0;}
+.field input[type="time"]::-webkit-datetime-edit-fields-wrapper{display:flex;align-items:center;}
+.field input[type="date"]{height:44px;line-height:44px;}
+.field textarea{height:auto;min-height:60px;padding:10px 12px;resize:none;line-height:1.5;}
+.field select{height:44px;line-height:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-/* DURATION PREVIEW */
 .dur-preview{background:var(--accent2);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--accent);font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px}
 .dur-preview.hidden{display:none}
 .dur-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
 
-/* BUTTONS */
 .btn{width:100%;height:48px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn:active{opacity:.82;transform:scale(.98)}
 .btn-primary{background:var(--accent);color:#fff}
@@ -141,11 +76,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .btn-danger-outline{background:none;color:var(--danger);border:1.5px solid var(--danger)}
 .btn-sm{height:36px;font-size:13px;border-radius:9px}
 
-/* TOAST */
 .toast{position:fixed;bottom:calc(var(--safe-bot) + 96px);left:50%;transform:translateX(-50%) translateY(16px);background:#111;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:200}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:auto}
 .modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:92dvh;overflow-y:auto;transform:translateY(40px);transition:transform .25s}
@@ -158,7 +91,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .modal-btn-danger{background:var(--danger);color:#fff}
 .modal-btn-cancel{background:var(--bg);color:var(--text)}
 
-/* CALENDAR */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-nav-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:9px;background:none;cursor:pointer;font-size:18px;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;color:var(--text)}
 .cal-month{font-size:15px;font-weight:700}
@@ -174,7 +106,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .cal-bar.done{background:var(--success)}
 .cal-bar.active-shift{background:var(--warn)}
 
-/* SHIFT ITEMS */
 .shift-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .shift-item:last-child{border-bottom:none;padding-bottom:0}
 .shift-item:first-child{padding-top:0}
@@ -197,43 +128,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .icon-btn.edit{background:var(--accent2)}
 .icon-btn.del{background:var(--danger-bg)}
 
-/* STATUS PILLS */
 .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
 .pill.planned{background:var(--planned-bg);color:var(--planned)}
 .pill.done{background:var(--success-bg);color:var(--success)}
 .pill.active{background:var(--warn-bg);color:var(--warn)}
 
-/* SUMMARY BOXES */
 .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .sum-box{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
 .sum-box .val{font-size:22px;font-weight:700}
 .sum-box .lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
 
-/* PERIOD BUTTONS */
-.period-row{display:flex;gap:6px;margin-bottom:12px}
-.period-btn{flex:1;height:34px;border:1.5px solid var(--border);border-radius:8px;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;-webkit-appearance:none;transition:all .12s}
-.period-btn.active{border-color:var(--accent);background:var(--accent2);color:var(--accent)}
+/* PERIOD ROW — 4 buttons, wraps nicely */
+.period-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.period-btn{flex:1;min-width:60px;height:34px;border:1.5px solid var(--border);border-radius:8px;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;-webkit-appearance:none;transition:all .12s;white-space:nowrap}
+.period-btn.active{border-color:var(--accent);background:var(--accent2);color:var(--accent);font-weight:700}
 
-/* SECTION VISIBILITY */
+/* CUSTOM DATE RANGE PICKER */
+.date-range-picker{background:var(--bg);border-radius:12px;padding:12px;margin-top:4px;border:1.5px solid var(--accent);display:none;flex-direction:column;gap:10px;animation:fadeIn .18s ease}
+.date-range-picker.open{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.date-range-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.date-range-label{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.date-range-apply{height:38px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%}
+.date-range-apply:active{opacity:.82}
+/* Custom range active label */
+.custom-range-label{font-size:11px;color:var(--accent);font-weight:600;background:var(--accent2);padding:4px 10px;border-radius:20px;margin-top:2px;display:none}
+.custom-range-label.show{display:inline-flex;align-items:center;gap:4px}
+
 .section{display:none;flex-direction:column;gap:10px}
 .section.active{display:flex}
 
-/* TAB BAR */
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:calc(var(--safe-bot) + 4px);z-index:20}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;gap:3px;cursor:pointer;border:none;background:none;font-family:inherit;-webkit-appearance:none}
 .tab-icon{font-size:22px;line-height:1}
 .tab-lbl{font-size:10px;font-weight:500;color:var(--muted)}
 .tab.active .tab-lbl{color:var(--accent);font-weight:700}
 
-/* EMPTY */
 .empty{text-align:center;padding:24px 12px;color:var(--muted)}
 .empty-icon{font-size:32px;margin-bottom:8px}
 .empty p{font-size:13px;line-height:1.6}
 
-/* EXPORT PREVIEW */
 .export-preview{background:var(--bg);border-radius:10px;padding:12px;font-size:13px;color:var(--text);line-height:1.9;white-space:pre-wrap;word-break:break-word;font-family:'Menlo','Courier New',monospace;border:1px solid var(--border);max-height:260px;overflow-y:auto;margin-bottom:10px}
 
-/* SHEETS BANNER */
 .sheets-banner{background:linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%);border-radius:var(--radius);padding:14px;color:#fff;display:flex;align-items:flex-start;gap:12px}
 .sheets-banner-icon{font-size:28px;flex-shrink:0;margin-top:2px}
 .sheets-banner-text h3{font-size:14px;font-weight:700;margin-bottom:4px}
@@ -244,110 +180,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .status-dot.err{background:#fca5a5}
 .status-dot.warn{background:#fcd34d}
 
-/* SETUP FORM */
 .setup-field{margin-bottom:10px}
 .setup-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:5px}
 .setup-field input{width:100%;height:42px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;-webkit-appearance:none;background:var(--bg);color:var(--text)}
 .setup-field input:focus{border-color:var(--accent);background:#fff}
 .setup-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
 
-/* INFO BOX */
 .info-box{background:var(--accent2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--accent);line-height:1.6;display:flex;gap:8px;align-items:flex-start}
 .info-box-icon{flex-shrink:0;font-size:14px;margin-top:1px}
 
-/* ── PULL TO REFRESH ── */
-@keyframes ptr-rotate {
-  to { transform: rotate(360deg); }
-}
-
-#ptr-indicator {
-  position:fixed;
-  top: calc(var(--safe-top) + 14px);
-  left:50%;
-  transform:translateX(-50%) scale(0);
-  width:40px; height:40px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  box-shadow:0 4px 16px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.04);
-  display:flex; align-items:center; justify-content:center;
-  z-index:9999;
-  pointer-events:none;
-  opacity:0;
-  will-change:transform,opacity;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
-}
-#ptr-indicator.visible {
-  opacity:1;
-  transform:translateX(-50%) scale(1);
-}
-
-/* Progress ring — fills as user pulls */
-#ptr-ring {
-  width:24px; height:24px;
-  display:block;
-}
-#ptr-ring circle {
-  fill:none;
-  stroke:var(--accent);
-  stroke-width:2.5;
-  stroke-linecap:round;
-  stroke-dasharray:62.8;
-  stroke-dashoffset:62.8;
-  transform-origin:12px 12px;
-  transform:rotate(-90deg);
-  transition:stroke-dashoffset .12s linear;
-}
-
-/* Loading spinner — separate rotating wrapper, partial arc */
-#ptr-spinner {
-  display:none;
-  width:24px; height:24px;
-  animation:ptr-rotate .7s linear infinite;
-}
-#ptr-spinner circle {
-  fill:none;
-  stroke:var(--accent);
-  stroke-width:2.5;
-  stroke-linecap:round;
-  /* ~¾ of circumference = 47, gap = 15.8 */
-  stroke-dasharray:47 15.8;
-  stroke-dashoffset:0;
-  transform-origin:12px 12px;
-}
-
-#ptr-indicator.loading #ptr-ring    { display:none; }
-#ptr-indicator.loading #ptr-spinner { display:block; }
-
-/* Done state */
-#ptr-check {
-  display:none;
-  color:var(--success);
-  font-size:15px;
-  font-weight:700;
-  line-height:1;
-}
-#ptr-indicator.done #ptr-ring    { display:none; }
-#ptr-indicator.done #ptr-spinner { display:none; }
-#ptr-indicator.done #ptr-check   { display:flex; }
+@keyframes ptr-rotate{to{transform:rotate(360deg)}}
+#ptr-indicator{position:fixed;top:calc(var(--safe-top) + 14px);left:50%;transform:translateX(-50%) scale(0);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 4px 16px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:center;z-index:9999;pointer-events:none;opacity:0;will-change:transform,opacity;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s}
+#ptr-indicator.visible{opacity:1;transform:translateX(-50%) scale(1)}
+#ptr-ring{width:24px;height:24px;display:block}
+#ptr-ring circle{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:62.8;stroke-dashoffset:62.8;transform-origin:12px 12px;transform:rotate(-90deg);transition:stroke-dashoffset .12s linear}
+#ptr-spinner{display:none;width:24px;height:24px;animation:ptr-rotate .7s linear infinite}
+#ptr-spinner circle{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:47 15.8;stroke-dashoffset:0;transform-origin:12px 12px}
+#ptr-indicator.loading #ptr-ring{display:none}
+#ptr-indicator.loading #ptr-spinner{display:block}
+#ptr-check{display:none;color:var(--success);font-size:15px;font-weight:700;line-height:1}
+#ptr-indicator.done #ptr-ring,#ptr-indicator.done #ptr-spinner{display:none}
+#ptr-indicator.done #ptr-check{display:flex}
 </style>
 </head>
 <body>
 
 <div class="sync-bar" id="syncBar"><div class="sync-bar-fill"></div></div>
 
-<!-- Pull-to-refresh indicator -->
 <div id="ptr-indicator">
-  <!-- Progress arc (fills while pulling) -->
-  <svg id="ptr-ring" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9"/>
-  </svg>
-  <!-- Spinning arc (shown while loading) -->
-  <svg id="ptr-spinner" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9"/>
-  </svg>
-  <!-- Checkmark (shown when done) -->
+  <svg id="ptr-ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+  <svg id="ptr-spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
   <span id="ptr-check">✓</span>
 </div>
 
@@ -417,16 +279,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
   <div class="section" id="sec-export">
     <div class="card">
       <div class="card-title">Filtr období</div>
+
       <div class="period-row">
-        <button class="period-btn active" id="pAll" onclick="setPeriod('all')">Vše</button>
-        <button class="period-btn" id="pMonth" onclick="setPeriod('month')">Měsíc</button>
-        <button class="period-btn" id="pWeek" onclick="setPeriod('week')">Týden</button>
+        <button class="period-btn active" id="pAll"   onclick="setPeriod('all')">Vše</button>
+        <button class="period-btn"        id="pMonth" onclick="setPeriod('month')">Měsíc</button>
+        <button class="period-btn"        id="pWeek"  onclick="setPeriod('week')">Týden</button>
+        <button class="period-btn"        id="pCustom" onclick="toggleCustomPicker()">Vlastní</button>
       </div>
-      <div class="sum-row">
-        <div class="sum-box"><div class="val" id="sumShifts">0</div><div class="lbl" id="sumShiftsLbl">směn</div></div>
-        <div class="sum-box"><div class="val" id="sumHours">0</div><div class="lbl">hodin</div></div>
+
+      <!-- Custom date range picker -->
+      <div class="date-range-picker" id="dateRangePicker">
+        <div class="date-range-label">Vlastní rozsah</div>
+        <div class="date-range-row">
+          <div class="field" style="margin-bottom:0">
+            <label>Od</label>
+            <input type="date" id="dateFrom" onchange="onCustomDateChange()">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Do</label>
+            <input type="date" id="dateTo" onchange="onCustomDateChange()">
+          </div>
+        </div>
+        <button class="date-range-apply" onclick="applyCustomRange()">Použít rozsah</button>
+      </div>
+
+      <!-- Active custom range badge -->
+      <div class="custom-range-label" id="customRangeLabel">
+        <span>📅</span><span id="customRangeText"></span>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="sum-row">
+          <div class="sum-box"><div class="val" id="sumShifts">0</div><div class="lbl" id="sumShiftsLbl">směn</div></div>
+          <div class="sum-box"><div class="val" id="sumHours">0</div><div class="lbl">hodin</div></div>
+        </div>
       </div>
     </div>
+
     <div class="card">
       <div class="card-title">Náhled zprávy pro majitele</div>
       <div class="export-preview" id="exportPreview">—</div>
@@ -450,7 +339,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
         </div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">Nastavení propojení</div>
       <div class="info-box" style="margin-bottom:12px">
@@ -466,7 +354,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
       <div id="testResult" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>
       <button class="btn btn-primary" onclick="manualSync()">⟳ Synchronizovat nyní</button>
     </div>
-
     <div class="card">
       <div class="card-title">Jak nastavit Google Tabulky</div>
       <div style="font-size:13px;color:var(--text);line-height:1.7">
@@ -481,14 +368,11 @@ function doPost(e) { return handleRequest(e); }
 function handleRequest(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
-
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(["id","typ","datum","start","end","poznamka"]);
   }
-
   const action = (e.parameter && e.parameter.action) || "get";
-
   if (action === "add") {
     sheet.appendRow([
       e.parameter.id, e.parameter.typ, e.parameter.datum,
@@ -496,7 +380,6 @@ function handleRequest(e) {
     ]);
     return out({ok:true});
   }
-
   if (action === "delete") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
@@ -505,7 +388,6 @@ function handleRequest(e) {
     }
     return out({ok:true});
   }
-
   if (action === "update") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
@@ -520,16 +402,14 @@ function handleRequest(e) {
     }
     return out({ok:true});
   }
-
   const data = sheet.getDataRange().getDisplayValues();
   if (data.length <= 1) return out([]);
   const rows = data.slice(1).map(r => ({
-    id:String(r[0]), typ:String(r[1]), datum:String(r[2]),
-    start:String(r[3]), end:String(r[4]), poznamka:String(r[5])
+    id:String(r[0]),typ:String(r[1]),datum:String(r[2]),
+    start:String(r[3]),end:String(r[4]),poznamka:String(r[5])
   }));
   return out(rows);
 }
-
 function out(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
@@ -545,18 +425,10 @@ function out(obj) {
 </div>
 
 <div class="tabbar">
-  <button class="tab active" id="tab-cal" onclick="switchTab('cal')">
-    <span class="tab-icon">📅</span><span class="tab-lbl">Kalendář</span>
-  </button>
-  <button class="tab" id="tab-list" onclick="switchTab('list')">
-    <span class="tab-icon">📋</span><span class="tab-lbl">Přehled</span>
-  </button>
-  <button class="tab" id="tab-export" onclick="switchTab('export')">
-    <span class="tab-icon">📤</span><span class="tab-lbl">Export</span>
-  </button>
-  <button class="tab" id="tab-settings" onclick="switchTab('settings')">
-    <span class="tab-icon">⚙️</span><span class="tab-lbl">Nastavení</span>
-  </button>
+  <button class="tab active" id="tab-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span><span class="tab-lbl">Kalendář</span></button>
+  <button class="tab" id="tab-list" onclick="switchTab('list')"><span class="tab-icon">📋</span><span class="tab-lbl">Přehled</span></button>
+  <button class="tab" id="tab-export" onclick="switchTab('export')"><span class="tab-icon">📤</span><span class="tab-lbl">Export</span></button>
+  <button class="tab" id="tab-settings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span><span class="tab-lbl">Nastavení</span></button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -594,6 +466,7 @@ function fmtDur(h){
 function smenLabel(n){ if(n===1)return 'směna'; if(n>=2&&n<=4)return 'směny'; return 'směn'; }
 function todayStr(){ const n=new Date(); return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate()); }
 function parseDate(ds){ const[y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d); }
+function fmtDateCZ(ds){ const[y,m,d]=ds.split('-').map(Number); return d+'.'+m+'.'+y; }
 
 // ── SYNC STATUS ───────────────────────────────────────────────────────────────
 function setSyncStatus(state,text){
@@ -627,7 +500,6 @@ async function sheetsUpdate(item,typ){
     await fetch(scriptUrl+'?'+p,{mode:'cors'});
   }catch(e){}
 }
-
 async function autoSyncFromSheets(silent){
   if(!scriptUrl||_syncing) return;
   _syncing=true; setSyncStatus('syncing','Synchronizuji…');
@@ -780,7 +652,7 @@ function renderDayCard(){
   document.getElementById('calDayContent').innerHTML=html;
 }
 
-// ── ADD SHIFT ─────────────────────────────────────────────────────────────────
+// ── ADD / EDIT / FINISH ───────────────────────────────────────────────────────
 let addTargetDate=null;
 function openAddForDay(){
   addTargetDate=calSelected||todayStr();
@@ -891,6 +763,7 @@ function confirmClearAll(){
   ]);
 }
 
+// ── LIST ──────────────────────────────────────────────────────────────────────
 function renderList(){
   const pl=document.getElementById('plannedList'),dl=document.getElementById('doneList');
   document.getElementById('plannedCount').textContent=planned.length?planned.length+' '+smenLabel(planned.length):'';
@@ -905,23 +778,81 @@ function renderList(){
   }).join('');
 }
 
+// ── EXPORT — period + custom range ────────────────────────────────────────────
 let exportPeriod='all';
+let customFrom=null, customTo=null, customActive=false;
+
 function setPeriod(p){
   exportPeriod=p;
-  ['All','Month','Week'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
+  ['All','Month','Week','Custom'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
   document.getElementById('p'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
+  // Close picker if switching away from custom
+  if(p!=='custom'){
+    document.getElementById('dateRangePicker').classList.remove('open');
+    if(!customActive) document.getElementById('customRangeLabel').classList.remove('show');
+  }
+  if(p==='custom') customActive=false; // reset so badge shows only after Apply
   renderExport();
 }
+
+function toggleCustomPicker(){
+  const picker=document.getElementById('dateRangePicker');
+  const isOpen=picker.classList.contains('open');
+  // Activate the button style
+  ['All','Month','Week','Custom'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
+  document.getElementById('pCustom').classList.add('active');
+  exportPeriod='custom';
+  if(isOpen){
+    picker.classList.remove('open');
+  } else {
+    picker.classList.add('open');
+    // Pre-fill with current month if empty
+    if(!document.getElementById('dateFrom').value){
+      const now=new Date();
+      const y=now.getFullYear(), m=pad(now.getMonth()+1);
+      document.getElementById('dateFrom').value=`${y}-${m}-01`;
+      document.getElementById('dateTo').value=todayStr();
+    }
+  }
+  renderExport();
+}
+
+function onCustomDateChange(){
+  // live preview while typing — don't apply yet
+}
+
+function applyCustomRange(){
+  const from=document.getElementById('dateFrom').value;
+  const to=document.getElementById('dateTo').value;
+  if(!from||!to){ showToast('⚠ Vyplň obě data'); return; }
+  if(from>to){ showToast('⚠ Datum „od" musí být před „do"'); return; }
+  customFrom=from; customTo=to; customActive=true;
+  document.getElementById('dateRangePicker').classList.remove('open');
+  // Show badge
+  const lbl=document.getElementById('customRangeLabel');
+  document.getElementById('customRangeText').textContent=fmtDateCZ(from)+' – '+fmtDateCZ(to);
+  lbl.classList.add('show');
+  renderExport();
+}
+
 function getFiltered(){
-  if(exportPeriod==='all') return done;
   const now=new Date();
   return done.filter(s=>{
     const d=parseDate(s.date);
     if(exportPeriod==='month') return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
-    if(exportPeriod==='week'){ const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0); const eow=new Date(sow); eow.setDate(sow.getDate()+6); return d>=sow&&d<=eow; }
-    return true;
+    if(exportPeriod==='week'){
+      const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0);
+      const eow=new Date(sow); eow.setDate(sow.getDate()+6); eow.setHours(23,59,59,999);
+      return d>=sow&&d<=eow;
+    }
+    if(exportPeriod==='custom'&&customActive&&customFrom&&customTo){
+      const f=parseDate(customFrom), t=parseDate(customTo); t.setHours(23,59,59,999);
+      return d>=f&&d<=t;
+    }
+    return true; // 'all' or custom not yet applied
   });
 }
+
 function buildExportText(){
   const f=getFiltered();
   if(f.length===0) return '— žádné záznamy —';
@@ -983,73 +914,17 @@ setInterval(()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); },5*
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); });
 
 // ── PULL TO REFRESH ───────────────────────────────────────────────────────────
-(() => {
-  const ind      = document.getElementById('ptr-indicator');
-  const ringCirc = document.querySelector('#ptr-ring circle');
-  const CIRCUM   = 62.8; // 2π×9
-  const THRESHOLD = 80;
-  const MAX_PULL  = 120;
-
-  let startY   = 0;
-  let pulling  = false;
-  let triggered= false;
-
-  function setProgress(ratio) {
-    const clamped = Math.min(ratio, 1);
-    ringCirc.style.strokeDashoffset = CIRCUM * (1 - clamped);
-  }
-
-  function show() { ind.classList.add('visible'); }
-  function hide() {
-    ind.classList.remove('visible','loading','done');
-    ringCirc.style.strokeDashoffset = CIRCUM;
-  }
-
-  document.addEventListener('touchstart', e => {
-    if (window.scrollY > 0) return;
-    startY    = e.touches[0].clientY;
-    pulling   = true;
-    triggered = false;
-    ind.classList.remove('loading','done');
-    setProgress(0);
-  }, { passive: true });
-
-  document.addEventListener('touchmove', e => {
-    if (!pulling) return;
-    const dy = e.touches[0].clientY - startY;
-    if (dy <= 0) { hide(); return; }
-
-    show();
-    setProgress(dy / MAX_PULL);
-
-    if (dy >= THRESHOLD && !triggered) {
-      triggered = true;
-      // small bounce to signal "ready to release"
-      ind.style.transition = 'transform .15s cubic-bezier(.34,1.56,.64,1), opacity .2s';
-      ind.style.transform  = 'translateX(-50%) scale(1.18)';
-      setTimeout(() => {
-        ind.style.transition = 'transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s';
-        ind.style.transform  = 'translateX(-50%) scale(1)';
-      }, 150);
-    }
-  }, { passive: true });
-
-  document.addEventListener('touchend', async () => {
-    if (!pulling) return;
-    pulling = false;
-
-    if (!triggered) { hide(); return; }
-
-    // Show spinning arc
-    ind.classList.add('loading');
-
-    await manualSync();
-
-    // Show checkmark
-    ind.classList.remove('loading');
-    ind.classList.add('done');
-    setTimeout(hide, 900);
-  }, { passive: true });
+(()=>{
+  const ind=document.getElementById('ptr-indicator');
+  const ringCirc=document.querySelector('#ptr-ring circle');
+  const CIRCUM=62.8,THRESHOLD=80,MAX_PULL=120;
+  let startY=0,pulling=false,triggered=false;
+  function setProgress(r){ ringCirc.style.strokeDashoffset=CIRCUM*(1-Math.min(r,1)); }
+  function show(){ ind.classList.add('visible'); }
+  function hide(){ ind.classList.remove('visible','loading','done'); ringCirc.style.strokeDashoffset=CIRCUM; }
+  document.addEventListener('touchstart',e=>{ if(window.scrollY>0)return; startY=e.touches[0].clientY; pulling=true; triggered=false; ind.classList.remove('loading','done'); setProgress(0); },{passive:true});
+  document.addEventListener('touchmove',e=>{ if(!pulling)return; const dy=e.touches[0].clientY-startY; if(dy<=0){hide();return;} show(); setProgress(dy/MAX_PULL); if(dy>=THRESHOLD&&!triggered){ triggered=true; ind.style.transition='transform .15s cubic-bezier(.34,1.56,.64,1),opacity .2s'; ind.style.transform='translateX(-50%) scale(1.18)'; setTimeout(()=>{ ind.style.transition='transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s'; ind.style.transform='translateX(-50%) scale(1)'; },150); } },{passive:true});
+  document.addEventListener('touchend',async()=>{ if(!pulling)return; pulling=false; if(!triggered){hide();return;} ind.classList.add('loading'); await manualSync(); ind.classList.remove('loading'); ind.classList.add('done'); setTimeout(hide,900); },{passive:true});
 })();
 </script>
 </body>

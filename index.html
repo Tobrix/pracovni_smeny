@@ -328,40 +328,75 @@ function doPost(e) { return handleRequest(e); }
 function handleRequest(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
+
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(["id","typ","datum","start","end","poznamka"]);
   }
+
   const action = (e.parameter && e.parameter.action) || "get";
+
   if (action === "add") {
-    const d = JSON.parse(e.postData.contents);
-    sheet.appendRow([d.id,d.typ,d.datum,d.start,d.end,d.poznamka||""]);
+    sheet.appendRow([
+      e.parameter.id,
+      e.parameter.typ,
+      e.parameter.datum,
+      e.parameter.start,
+      e.parameter.end,
+      e.parameter.poznamka || ""
+    ]);
     return out({ok:true});
   }
+
   if (action === "delete") {
     const id = e.parameter.id;
-    const data = sheet.getDataRange().getValues();
+    const data = sheet.getDataRange().getDisplayValues();
+
     for (let i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(id)) { sheet.deleteRow(i+1); break; }
-    }
-    return out({ok:true});
-  }
-  if (action === "update") {
-    const d = JSON.parse(e.postData.contents);
-    const data = sheet.getDataRange().getValues();
-    for (let i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(d.id)) {
-        sheet.getRange(i+1,1,1,6).setValues([[d.id,d.typ,d.datum,d.start,d.end,d.poznamka||""]]);
+      if (String(data[i][0]) === String(id)) {
+        sheet.deleteRow(i + 1);
         break;
       }
     }
     return out({ok:true});
   }
-  // get all
-  const data = sheet.getDataRange().getValues();
+
+  if (action === "update") {
+    const id = e.parameter.id;
+    const data = sheet.getDataRange().getDisplayValues();
+
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(id)) {
+        sheet.getRange(i+1,1,1,6).setValues([[
+          id,
+          e.parameter.typ,
+          e.parameter.datum,
+          e.parameter.start,
+          e.parameter.end,
+          e.parameter.poznamka || ""
+        ]]);
+        break;
+      }
+    }
+
+    return out({ok:true});
+  }
+
+  const data = sheet.getDataRange().getDisplayValues();
+
+  if (data.length <= 1) {
+    return out([]);
+  }
+
   const rows = data.slice(1).map(r => ({
-    id:r[0],typ:r[1],datum:r[2],start:r[3],end:r[4],poznamka:r[5]
+    id: String(r[0]),
+    typ: String(r[1]),
+    datum: String(r[2]),
+    start: String(r[3]),
+    end: String(r[4]),
+    poznamka: String(r[5])
   }));
+
   return out(rows);
 }
 
@@ -463,18 +498,22 @@ async function sheetsGet(){
 }
 async function sheetsAdd(item, typ){
   if(!scriptUrl) return;
+
   try{
     const params = new URLSearchParams({
-  action:'add',
-  id:item.id,
-  typ:typ,
-  datum:item.date,
-  start:item.start,
-  end:item.end,
-  poznamka:item.note||''
-});
+      action:'add',
+      id:item.id,
+      typ:typ,
+      datum:item.date,
+      start:item.start,
+      end:item.end,
+      poznamka:item.note || ''
+    });
 
-await fetch(scriptUrl + '?' + params);
+    const r = await fetch(scriptUrl + '?' + params, {
+      method:'GET',
+      mode:'cors'
+    });
 
     console.log('ADD status:', r.status);
     console.log(await r.text());

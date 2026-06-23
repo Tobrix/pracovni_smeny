@@ -786,12 +786,11 @@ function setPeriod(p){
   exportPeriod=p;
   ['All','Month','Week','Custom'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
   document.getElementById('p'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
-  // Close picker if switching away from custom
   if(p!=='custom'){
     document.getElementById('dateRangePicker').classList.remove('open');
-    if(!customActive) document.getElementById('customRangeLabel').classList.remove('show');
+    document.getElementById('customRangeLabel').classList.remove('show');
+    customActive=false;
   }
-  if(p==='custom') customActive=false; // reset so badge shows only after Apply
   renderExport();
 }
 

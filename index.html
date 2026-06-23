@@ -1002,6 +1002,72 @@ updateAll();
 // Periodic sync every 5 minutes when tab is visible
 setInterval(()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); }, 5*60*1000);
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); });
+
+// ── PULL TO REFRESH PRO IPHONE ───────────────────────────────────────────────
+(() => {
+  let touchStartPercent = 0;
+  let isAtTop = false;
+
+  // Vytvoříme vizuální indikátor (kolečko na vrchu stránky)
+  const refreshIndicator = document.createElement('div');
+  refreshIndicator.style.cssText = `
+    position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 40px; background: white; border-radius: 50%;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2); display: flex; align-items: center;
+    justify-content: center; font-size: 20px; z-index: 9999;
+    transition: top 0.2s, transform 0.1s; pointer-events: none;
+  `;
+  refreshIndicator.innerHTML = '🔄';
+  document.body.appendChild(refreshIndicator);
+
+  window.addEventListener('touchstart', (e) => {
+    // Synchronizaci spustíme jen, když je uživatel úplně nahoře na stránce
+    isAtTop = (window.scrollY === 0);
+    if (isAtTop) {
+      touchStartPercent = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isAtTop) return;
+
+    const currentY = e.touches[0].clientY;
+    const pullDistance = currentY - touchStartPercent;
+
+    // Pokud táhne prstem dolů
+    if (pullDistance > 0 && pullDistance < 150) {
+      // Posuneme indikátor směrem dolů a jemně s ním otáčíme
+      refreshIndicator.style.top = `${Math.min(20, -50 + pullDistance / 2)}px`;
+      refreshIndicator.style.transform = `translateX(-50%) rotate(${pullDistance * 2}deg)`;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', async (e) => {
+    if (!isAtTop) return;
+
+    const currentY = e.changedTouches[0].clientY;
+    const pullDistance = currentY - touchStartPercent;
+
+    // Pokud uživatel zatáhl dostatočně hluboko (aspoň 100 pixelů)
+    if (pullDistance > 100) {
+      // Animace indikátoru (zůstane viset nahoře během načítání)
+      refreshIndicator.style.top = '20px';
+      
+      // Spustíme tvou stávající funkci pro manuální synchronizaci
+      if (typeof manualSync === 'function') {
+        await manualSync();
+      }
+    }
+
+    // Schováme indikátor zpět nahoru
+    setTimeout(() => {
+      refreshIndicator.style.top = '-50px';
+    }, 300);
+    
+    isAtTop = false;
+  }, { passive: true });
+})();
+  
 </script>
 </body>
 </html>

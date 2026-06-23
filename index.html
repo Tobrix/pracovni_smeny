@@ -23,7 +23,7 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
 
-/* SYNC INDICATOR */
+/* SYNC BAR */
 .sync-bar{height:3px;background:var(--accent2);position:fixed;top:0;left:0;right:0;z-index:100;overflow:hidden;display:none}
 .sync-bar.active{display:block}
 .sync-bar-fill{height:100%;background:var(--accent);animation:syncprogress 1.2s ease-in-out infinite}
@@ -51,19 +51,79 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px}
 .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 
-/* FORM */
+/* FORM — FIX: time input vertically centered */
 .field{margin-bottom:10px}
 .field label{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:5px}
-.field input,.field select,.field textarea{
-  width:100%;height:44px;border:1.5px solid var(--border);border-radius:10px;
-  padding:0 12px;font-size:15px;color:var(--text);background:var(--bg);
-  font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;
-  display:flex;align-items:center;line-height:44px;
+
+/* All inputs share this base */
+.field input,
+.field select,
+.field textarea {
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:0 12px;
+  font-size:15px;
+  color:var(--text);
+  background:var(--bg);
+  font-family:inherit;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
 }
-.field input[type="time"]{display:block;padding-top:0;padding-bottom:0;line-height:normal;height:44px;vertical-align:middle;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
-.field textarea{height:auto;min-height:60px;padding:10px 12px;resize:none;line-height:1.5}
-.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* Standard text inputs */
+.field input[type="text"],
+.field input[type="url"],
+.field input[type="email"] {
+  height:44px;
+  line-height:44px;
+}
+
+/* TIME INPUT — key fix: use flex centering, not line-height */
+.field input[type="time"] {
+  height:44px;
+  /* Remove line-height trick; use flexbox instead */
+  display:flex;
+  align-items:center;
+  /* iOS Safari needs padding reset */
+  padding-top:0;
+  padding-bottom:0;
+  /* Webkit internal parts alignment */
+  -webkit-align-items:center;
+}
+
+/* Webkit time picker internal part centering */
+.field input[type="time"]::-webkit-datetime-edit {
+  display:flex;
+  align-items:center;
+  height:100%;
+  padding:0;
+}
+.field input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  display:flex;
+  align-items:center;
+}
+.field input[type="time"]::-webkit-datetime-edit-text,
+.field input[type="time"]::-webkit-datetime-edit-hour-field,
+.field input[type="time"]::-webkit-datetime-edit-minute-field,
+.field input[type="time"]::-webkit-datetime-edit-ampm-field {
+  display:flex;
+  align-items:center;
+}
+
+.field textarea{
+  height:auto;min-height:60px;
+  padding:10px 12px;
+  resize:none;line-height:1.5;
+}
+.field select{
+  height:44px;
+  line-height:44px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px
+}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* DURATION PREVIEW */
@@ -189,14 +249,90 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .setup-field input:focus{border-color:var(--accent);background:#fff}
 .setup-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
 
-/* AUTO-SYNC INFO BOX */
+/* INFO BOX */
 .info-box{background:var(--accent2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--accent);line-height:1.6;display:flex;gap:8px;align-items:flex-start}
 .info-box-icon{flex-shrink:0;font-size:14px;margin-top:1px}
+
+/* ── PULL TO REFRESH ── */
+@keyframes ptr-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes ptr-appear {
+  from { opacity:0; transform:scale(.7); }
+  to   { opacity:1; transform:scale(1); }
+}
+
+#ptr-indicator {
+  position:fixed;
+  top: calc(var(--safe-top) + 14px);
+  left:50%;
+  transform:translateX(-50%) scale(0);
+  width:40px; height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 4px 16px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.04);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+}
+#ptr-indicator.visible {
+  opacity:1;
+  transform:translateX(-50%) scale(1);
+}
+/* SVG arc ring */
+#ptr-ring {
+  width:24px; height:24px;
+  transition:none;
+}
+#ptr-ring circle {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-dasharray: 62.8; /* circumference ~ 2π×10 */
+  stroke-dashoffset: 62.8;
+  transform-origin:center;
+  transform:rotate(-90deg);
+  transition:stroke-dashoffset .15s linear;
+}
+#ptr-indicator.loading #ptr-ring circle {
+  stroke-dashoffset:0;
+  animation:ptr-spin .75s linear infinite;
+  transition:none;
+}
+#ptr-indicator.done #ptr-ring circle {
+  stroke:var(--success);
+  stroke-dashoffset:0;
+  animation:none;
+}
+/* Checkmark inside when done */
+#ptr-check {
+  position:absolute;
+  display:none;
+  color:var(--success);
+  font-size:14px;
+  font-weight:700;
+}
+#ptr-indicator.done #ptr-check { display:flex; }
+#ptr-indicator.done #ptr-ring  { display:none; }
 </style>
 </head>
 <body>
 
 <div class="sync-bar" id="syncBar"><div class="sync-bar-fill"></div></div>
+
+<!-- Pull-to-refresh indicator -->
+<div id="ptr-indicator">
+  <svg id="ptr-ring" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+  </svg>
+  <span id="ptr-check">✓</span>
+</div>
 
 <div class="hdr">
   <div class="hdr-row">
@@ -286,7 +422,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
   </div>
 
   <div class="section" id="sec-settings">
-    <div class="sheets-banner" id="sheetsBanner">
+    <div class="sheets-banner">
       <div class="sheets-banner-icon">📊</div>
       <div class="sheets-banner-text">
         <h3>Google Tabulky — záloha dat</h3>
@@ -298,11 +434,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
       </div>
     </div>
 
-    <div class="card" id="sheetsSetupCard">
+    <div class="card">
       <div class="card-title">Nastavení propojení</div>
       <div class="info-box" style="margin-bottom:12px">
         <div class="info-box-icon">ℹ️</div>
-        <div>Po vložení URL se data <strong>automaticky načtou</strong> z tabulky. Každá změna se okamžitě zapíše do tabulky i načte z ní.</div>
+        <div>Po vložení URL se data <strong>automaticky načtou</strong> z tabulky. Každá změna se okamžitě zapíše.</div>
       </div>
       <div class="setup-field">
         <label>Google Apps Script URL</label>
@@ -338,12 +474,8 @@ function handleRequest(e) {
 
   if (action === "add") {
     sheet.appendRow([
-      e.parameter.id,
-      e.parameter.typ,
-      e.parameter.datum,
-      e.parameter.start,
-      e.parameter.end,
-      e.parameter.poznamka || ""
+      e.parameter.id, e.parameter.typ, e.parameter.datum,
+      e.parameter.start, e.parameter.end, e.parameter.poznamka || ""
     ]);
     return out({ok:true});
   }
@@ -351,12 +483,8 @@ function handleRequest(e) {
   if (action === "delete") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
-
     for (let i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(id)) {
-        sheet.deleteRow(i + 1);
-        break;
-      }
+      if (String(data[i][0]) === String(id)) { sheet.deleteRow(i+1); break; }
     }
     return out({ok:true});
   }
@@ -364,39 +492,24 @@ function handleRequest(e) {
   if (action === "update") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
-
     for (let i = 1; i < data.length; i++) {
       if (String(data[i][0]) === String(id)) {
         sheet.getRange(i+1,1,1,6).setValues([[
-          id,
-          e.parameter.typ,
-          e.parameter.datum,
-          e.parameter.start,
-          e.parameter.end,
-          e.parameter.poznamka || ""
+          id, e.parameter.typ, e.parameter.datum,
+          e.parameter.start, e.parameter.end, e.parameter.poznamka||""
         ]]);
         break;
       }
     }
-
     return out({ok:true});
   }
 
   const data = sheet.getDataRange().getDisplayValues();
-
-  if (data.length <= 1) {
-    return out([]);
-  }
-
+  if (data.length <= 1) return out([]);
   const rows = data.slice(1).map(r => ({
-    id: String(r[0]),
-    typ: String(r[1]),
-    datum: String(r[2]),
-    start: String(r[3]),
-    end: String(r[4]),
-    poznamka: String(r[5])
+    id:String(r[0]), typ:String(r[1]), datum:String(r[2]),
+    start:String(r[3]), end:String(r[4]), poznamka:String(r[5])
   }));
-
   return out(rows);
 }
 
@@ -416,20 +529,16 @@ function out(obj) {
 
 <div class="tabbar">
   <button class="tab active" id="tab-cal" onclick="switchTab('cal')">
-    <span class="tab-icon">📅</span>
-    <span class="tab-lbl">Kalendář</span>
+    <span class="tab-icon">📅</span><span class="tab-lbl">Kalendář</span>
   </button>
   <button class="tab" id="tab-list" onclick="switchTab('list')">
-    <span class="tab-icon">📋</span>
-    <span class="tab-lbl">Přehled</span>
+    <span class="tab-icon">📋</span><span class="tab-lbl">Přehled</span>
   </button>
   <button class="tab" id="tab-export" onclick="switchTab('export')">
-    <span class="tab-icon">📤</span>
-    <span class="tab-lbl">Export</span>
+    <span class="tab-icon">📤</span><span class="tab-lbl">Export</span>
   </button>
   <button class="tab" id="tab-settings" onclick="switchTab('settings')">
-    <span class="tab-icon">⚙️</span>
-    <span class="tab-lbl">Nastavení</span>
+    <span class="tab-icon">⚙️</span><span class="tab-lbl">Nastavení</span>
   </button>
 </div>
 
@@ -451,13 +560,12 @@ let done    = JSON.parse(localStorage.getItem('done')||'[]');
 let scriptUrl = localStorage.getItem('scriptUrl')||'';
 let _syncing = false;
 
-const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
-const MONTHS_GEN = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
-const MONTHS_SHORT = ['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'];
-const DOW = ['Po','Út','St','Čt','Pá','So','Ne'];
-const pad = n => String(n).padStart(2,'0');
+const MONTHS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+const MONTHS_GEN=['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+const MONTHS_SHORT=['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'];
+const DOW=['Po','Út','St','Čt','Pá','So','Ne'];
+const pad=n=>String(n).padStart(2,'0');
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 function calcDur(s,e){
   const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);
   let m=(eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
@@ -466,118 +574,63 @@ function fmtDur(h){
   const w=Math.floor(h),m=Math.round((h-w)*60);
   if(m===0)return w+' hod'; if(w===0)return m+' min'; return w+' hod '+m+' min';
 }
-function smenLabel(n){
-  if(n===1)return 'směna'; if(n>=2&&n<=4)return 'směny'; return 'směn';
-}
-function todayStr(){
-  const n=new Date(); return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());
-}
+function smenLabel(n){ if(n===1)return 'směna'; if(n>=2&&n<=4)return 'směny'; return 'směn'; }
+function todayStr(){ const n=new Date(); return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate()); }
 function parseDate(ds){ const[y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d); }
 
-// ── SYNC STATUS UI ────────────────────────────────────────────────────────────
-function setSyncStatus(state, text){
-  const dot=document.getElementById('syncDot');
-  const txt=document.getElementById('syncText');
-  const el=document.getElementById('syncStatus');
-  const bar=document.getElementById('syncBar');
-  if(!scriptUrl){ el.style.display='none'; bar.classList.remove('active'); return; }
-  el.style.display='flex';
-  dot.className='sync-dot '+state;
-  txt.textContent=text;
-  if(state==='syncing') bar.classList.add('active');
-  else bar.classList.remove('active');
+// ── SYNC STATUS ───────────────────────────────────────────────────────────────
+function setSyncStatus(state,text){
+  const dot=document.getElementById('syncDot'),txt=document.getElementById('syncText'),el=document.getElementById('syncStatus'),bar=document.getElementById('syncBar');
+  if(!scriptUrl){el.style.display='none';bar.classList.remove('active');return;}
+  el.style.display='flex'; dot.className='sync-dot '+state; txt.textContent=text;
+  if(state==='syncing') bar.classList.add('active'); else bar.classList.remove('active');
 }
 
 // ── SHEETS API ────────────────────────────────────────────────────────────────
 async function sheetsGet(){
   if(!scriptUrl) return null;
-  try{
-    const r=await fetch(scriptUrl+'?action=get',{mode:'cors'});
-    return await r.json();
-  }catch(e){ return null; }
+  try{ const r=await fetch(scriptUrl+'?action=get',{mode:'cors'}); return await r.json(); }
+  catch(e){ return null; }
 }
-async function sheetsAdd(item, typ){
+async function sheetsAdd(item,typ){
   if(!scriptUrl) return;
-
   try{
-    const params = new URLSearchParams({
-      action:'add',
-      id:item.id,
-      typ:typ,
-      datum:item.date,
-      start:item.start,
-      end:item.end,
-      poznamka:item.note || ''
-    });
-
-    const r = await fetch(scriptUrl + '?' + params, {
-      method:'GET',
-      mode:'cors'
-    });
-
-    console.log('ADD status:', r.status);
-    console.log(await r.text());
-
-  }catch(e){
-    console.error('ADD ERROR:', e);
-  }
+    const p=new URLSearchParams({action:'add',id:item.id,typ,datum:item.date,start:item.start,end:item.end,poznamka:item.note||''});
+    await fetch(scriptUrl+'?'+p,{mode:'cors'});
+  }catch(e){}
 }
 async function sheetsDelete(id){
   if(!scriptUrl) return;
+  try{ await fetch(scriptUrl+'?action=delete&id='+encodeURIComponent(id),{mode:'cors'}); }catch(e){}
+}
+async function sheetsUpdate(item,typ){
+  if(!scriptUrl) return;
   try{
-    await fetch(scriptUrl+'?action=delete&id='+encodeURIComponent(id),{mode:'cors'});
+    const p=new URLSearchParams({action:'update',id:item.id,typ,datum:item.date,start:item.start,end:item.end,poznamka:item.note||''});
+    await fetch(scriptUrl+'?'+p,{mode:'cors'});
   }catch(e){}
 }
-async function sheetsUpdate(item, typ){
-  if(!scriptUrl) return;
 
-  const params = new URLSearchParams({
-    action:'update',
-    id:item.id,
-    typ:typ,
-    datum:item.date,
-    start:item.start,
-    end:item.end,
-    poznamka:item.note||''
-  });
-
-  await fetch(scriptUrl + '?' + params);
-}
-
-// ── AUTO SYNC FROM SHEETS ─────────────────────────────────────────────────────
 async function autoSyncFromSheets(silent){
   if(!scriptUrl||_syncing) return;
-  _syncing=true;
-  setSyncStatus('syncing','Synchronizuji…');
+  _syncing=true; setSyncStatus('syncing','Synchronizuji…');
   const rows=await sheetsGet();
   _syncing=false;
-  if(!rows){
-    setSyncStatus('err','Chyba spojení');
-    if(!silent) showToast('❌ Nepodařilo se načíst data');
-    updateSheetsStatus(false);
-    return;
-  }
+  if(!rows){ setSyncStatus('err','Chyba spojení'); if(!silent) showToast('❌ Nepodařilo se načíst data'); updateSheetsStatus(false); return; }
   planned=[]; done=[];
   rows.forEach(r=>{
     const item={id:String(r.id),date:String(r.datum),start:String(r.start),end:String(r.end),note:String(r.poznamka||'')};
-    if(r.typ==='planned') planned.push(item);
-    else if(r.typ==='done') done.push(item);
+    if(r.typ==='planned') planned.push(item); else if(r.typ==='done') done.push(item);
   });
   planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('planned',JSON.stringify(planned));
   localStorage.setItem('done',JSON.stringify(done));
-  updateAll();
-  setSyncStatus('ok','Synchronizováno');
-  updateSheetsStatus(true);
+  updateAll(); setSyncStatus('ok','Synchronizováno'); updateSheetsStatus(true);
   if(!silent) showToast('✅ Data synchronizována');
 }
+async function manualSync(){ await autoSyncFromSheets(false); }
 
-async function manualSync(){
-  await autoSyncFromSheets(false);
-}
-
-// ── CONNECTION TEST ───────────────────────────────────────────────────────────
 async function testConnection(){
   const url=document.getElementById('scriptUrl').value.trim();
   const el=document.getElementById('testResult');
@@ -585,35 +638,21 @@ async function testConnection(){
   el.textContent='Testuji…';
   try{
     const r=await fetch(url+'?action=get',{mode:'cors'});
-    if(r.ok){
-      el.style.color='var(--success)'; el.textContent='✅ Spojení OK! Načítám data…';
-      updateSheetsStatus(true);
-      await autoSyncFromSheets(true);
-      el.textContent='✅ Spojení OK — data načtena';
-    } else { el.style.color='var(--danger)'; el.textContent='❌ Chyba '+r.status; }
-  }catch(e){ el.style.color='var(--danger)'; el.textContent='❌ Nelze se připojit. Zkontroluj URL a nastavení nasazení.'; }
+    if(r.ok){ el.style.color='var(--success)'; el.textContent='✅ Spojení OK! Načítám data…'; updateSheetsStatus(true); await autoSyncFromSheets(true); el.textContent='✅ Spojení OK — data načtena'; }
+    else{ el.style.color='var(--danger)'; el.textContent='❌ Chyba '+r.status; }
+  }catch(e){ el.style.color='var(--danger)'; el.textContent='❌ Nelze se připojit.'; }
 }
-
 function saveScriptUrl(){
   scriptUrl=document.getElementById('scriptUrl').value.trim();
-  localStorage.setItem('scriptUrl',scriptUrl);
-  updateSheetsStatus();
-  if(scriptUrl) {
-    setSyncStatus('syncing', 'Načítám…');
-    // Okamžitá automatická synchronizace hned při zadání/změně URL
-    autoSyncFromSheets(false);
-  } else {
-    setSyncStatus('','');
-  }
+  localStorage.setItem('scriptUrl',scriptUrl); updateSheetsStatus();
+  if(scriptUrl){ setSyncStatus('syncing','Načítám…'); autoSyncFromSheets(false); } else setSyncStatus('','');
 }
-
 function updateSheetsStatus(ok){
-  const dot=document.querySelector('#sheetsStatus .status-dot');
-  const txt=document.getElementById('sheetsStatusText');
-  if(!scriptUrl){ dot.className='status-dot warn'; txt.textContent='Nepropojeno'; return; }
-  if(ok===true){ dot.className='status-dot ok'; txt.textContent='Propojeno'; return; }
-  if(ok===false){ dot.className='status-dot err'; txt.textContent='Chyba spojení'; return; }
-  dot.className='status-dot warn'; txt.textContent='URL nastavena';
+  const dot=document.querySelector('#sheetsStatus .status-dot'),txt=document.getElementById('sheetsStatusText');
+  if(!scriptUrl){dot.className='status-dot warn';txt.textContent='Nepropojeno';return;}
+  if(ok===true){dot.className='status-dot ok';txt.textContent='Propojeno';return;}
+  if(ok===false){dot.className='status-dot err';txt.textContent='Chyba spojení';return;}
+  dot.className='status-dot warn';txt.textContent='URL nastavena';
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
@@ -662,7 +701,7 @@ function renderCal(){
   for(let i=0;i<startDow;i++) html+=`<div></div>`;
   for(let d=1;d<=dim;d++){
     const ds=calYear+'-'+pad(calMonth+1)+'-'+pad(d);
-    let dayCls='cal-day'; let wrapCls='cal-day-wrap';
+    let dayCls='cal-day'; const wrapCls='cal-day-wrap';
     if(ds===today) dayCls+=' today';
     if(ds===calSelected) dayCls+=' selected';
     const hasPl=!!plannedMap[ds],hasDo=!!doneMap[ds],hasAc=!!activeMap[ds];
@@ -676,8 +715,7 @@ function renderCal(){
     } else { bars='<div style="height:3px"></div>'; }
     html+=`<div class="${wrapCls}"><div class="${dayCls}" onclick="selectDay('${ds}')">${d}</div>${bars}</div>`;
   }
-  grid.innerHTML=html;
-  renderDayCard();
+  grid.innerHTML=html; renderDayCard();
 }
 function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(); }
 function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(); }
@@ -689,8 +727,7 @@ function renderDayCard(){
   const[y,m,d]=ds.split('-').map(Number);
   document.getElementById('calDayTitle').textContent=d+'. '+MONTHS_GEN[m-1]+' '+y;
   document.getElementById('calDayAddBtn').style.display='flex';
-  const dayPl=planned.filter(s=>s.date===ds);
-  const dayDo=done.filter(s=>s.date===ds);
+  const dayPl=planned.filter(s=>s.date===ds),dayDo=done.filter(s=>s.date===ds);
   let html='';
   if(dayPl.length===0&&dayDo.length===0) html='<div class="empty" style="padding:14px 0"><p>Žádná směna.</p></div>';
   const now=new Date(); const nowMins=now.getHours()*60+now.getMinutes();
@@ -698,20 +735,17 @@ function renderDayCard(){
     const isToday=ds===todayStr();
     const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);
     const inProgress=isToday&&nowMins>=sh*60+sm&&nowMins<eh*60+em;
-    const badgeCls=inProgress?'active-now':'planned';
-    const pillCls=inProgress?'active':'planned';
-    const pillTxt=inProgress?'Právě probíhá':'Plánovaná';
     const idx=planned.indexOf(s);
     html+=`<div class="shift-item">
-      <div class="shift-badge ${badgeCls}"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+      <div class="shift-badge ${inProgress?'active-now':'planned'}"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
       <div class="shift-info">
         <div class="shift-time">${s.start} – ${s.end}</div>
-        <div class="shift-meta"><span class="pill ${pillCls}">${pillTxt}</span>${s.note?' · '+s.note:''}</div>
+        <div class="shift-meta"><span class="pill ${inProgress?'active':'planned'}">${inProgress?'Právě probíhá':'Plánovaná'}</span>${s.note?' · '+s.note:''}</div>
       </div>
       <div class="shift-actions">
-        <button class="icon-btn check" onclick="openConfirmFinish(${idx})" title="Potvrdit">✔</button>
-        <button class="icon-btn edit" onclick="openEditPlanned(${idx})" title="Upravit">✏</button>
-        <button class="icon-btn del" onclick="confirmDeletePlanned(${idx})" title="Smazat">✕</button>
+        <button class="icon-btn check" onclick="openConfirmFinish(${idx})">✔</button>
+        <button class="icon-btn edit" onclick="openEditPlanned(${idx})">✏</button>
+        <button class="icon-btn del" onclick="confirmDeletePlanned(${idx})">✕</button>
       </div>
     </div>`;
   });
@@ -723,9 +757,7 @@ function renderDayCard(){
         <div class="shift-time">${s.start} – ${s.end}</div>
         <div class="shift-meta"><span class="pill done">Odpracovaná</span> · ${fmtDur(dur)}${s.note?' · '+s.note:''}</div>
       </div>
-      <div class="shift-actions">
-        <button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')" title="Smazat">✕</button>
-      </div>
+      <div class="shift-actions"><button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')">✕</button></div>
     </div>`;
   });
   document.getElementById('calDayContent').innerHTML=html;
@@ -758,16 +790,12 @@ async function doAddShift(){
   const note=document.getElementById('mNote')?.value.trim()||'';
   if(!start||!end){openModal('Chybí čas','Vyplň začátek i konec směny.','',[{label:'OK',cls:'modal-btn-cancel',fn:()=>setTimeout(openAddForDay,200)}]);return;}
   const item={date:addTargetDate,start,end,note,id:Date.now().toString()};
-  planned.push(item);
-  planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  planned.push(item); planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('planned',JSON.stringify(planned));
   updateAll(); showToast('✅ Směna přidána');
-  setSyncStatus('syncing','Ukládám do tabulky…');
-  await sheetsAdd(item,'planned');
-  setSyncStatus('ok','Synchronizováno');
+  setSyncStatus('syncing','Ukládám…'); await sheetsAdd(item,'planned'); setSyncStatus('ok','Synchronizováno');
 }
 
-// ── EDIT PLANNED ──────────────────────────────────────────────────────────────
 function openEditPlanned(idx){
   const s=planned[idx];
   openModal('Upravit plánovanou směnu','',
@@ -792,12 +820,9 @@ async function doEditPlanned(idx){
   planned[idx]={...planned[idx],start,end,note};
   localStorage.setItem('planned',JSON.stringify(planned));
   updateAll(); showToast('✏ Směna upravena');
-  setSyncStatus('syncing','Aktualizuji v tabulce…');
-  await sheetsUpdate(planned[idx],'planned');
-  setSyncStatus('ok','Synchronizováno');
+  setSyncStatus('syncing','Aktualizuji…'); await sheetsUpdate(planned[idx],'planned'); setSyncStatus('ok','Synchronizováno');
 }
 
-// ── CONFIRM FINISH ────────────────────────────────────────────────────────────
 function openConfirmFinish(idx){
   const s=planned[idx];
   const now=new Date(); const nowTime=pad(now.getHours())+':'+pad(now.getMinutes());
@@ -822,88 +847,47 @@ async function doFinish(idx){
   if(!start||!end){openModal('Chybí čas','Vyplň začátek i konec.','',[{label:'OK',cls:'modal-btn-cancel',fn:null}]);return;}
   const s=planned[idx];
   const doneItem={date:s.date,start,end,note,id:Date.now().toString()};
-  done.push(doneItem);
-  done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+  done.push(doneItem); done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('done',JSON.stringify(done));
-  setSyncStatus('syncing','Aktualizuji stavy…');
-  await sheetsDelete(s.id);
-  planned.splice(idx,1);
-  localStorage.setItem('planned',JSON.stringify(planned));
+  setSyncStatus('syncing','Aktualizuji…'); await sheetsDelete(s.id);
+  planned.splice(idx,1); localStorage.setItem('planned',JSON.stringify(planned));
   updateAll(); showToast('✅ Směna potvrzena');
-  await sheetsAdd(doneItem,'done');
-  setSyncStatus('ok','Synchronizováno');
+  await sheetsAdd(doneItem,'done'); setSyncStatus('ok','Synchronizováno');
 }
 
-// ── DELETE ────────────────────────────────────────────────────────────────────
 function confirmDeletePlanned(idx){
   openModal('Smazat plánovanou směnu?','Tato akce je nevratná.','',[
-    {label:'Smazat',cls:'modal-btn-danger',fn:async()=>{
-      const id=planned[idx].id;
-      planned.splice(idx,1);
-      localStorage.setItem('planned',JSON.stringify(planned));
-      updateAll(); showToast('Smazáno');
-      setSyncStatus('syncing','Mažu z tabulky…');
-      await sheetsDelete(id);
-      setSyncStatus('ok','Synchronizováno');
-    }},
+    {label:'Smazat',cls:'modal-btn-danger',fn:async()=>{ const id=planned[idx].id; planned.splice(idx,1); localStorage.setItem('planned',JSON.stringify(planned)); updateAll(); showToast('Smazáno'); setSyncStatus('syncing','Mažu…'); await sheetsDelete(id); setSyncStatus('ok','Synchronizováno'); }},
     {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
   ]);
 }
 function confirmDeleteDone(id){
   openModal('Smazat odpracovanou směnu?','Tato akce je nevratná.','',[
-    {label:'Smazat',cls:'modal-btn-danger',fn:async()=>{
-      done=done.filter(s=>s.id!==id);
-      localStorage.setItem('done',JSON.stringify(done));
-      updateAll(); showToast('Smazáno');
-      setSyncStatus('syncing','Mažu z tabulky…');
-      await sheetsDelete(id);
-      setSyncStatus('ok','Synchronizováno');
-    }},
+    {label:'Smazat',cls:'modal-btn-danger',fn:async()=>{ done=done.filter(s=>s.id!==id); localStorage.setItem('done',JSON.stringify(done)); updateAll(); showToast('Smazáno'); setSyncStatus('syncing','Mažu…'); await sheetsDelete(id); setSyncStatus('ok','Synchronizováno'); }},
     {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
   ]);
 }
 function confirmClearAll(){
   openModal('Smazat vše?','Smažou se VŠECHNY lokální záznamy. Nevratná akce.','',[
-    {label:'Smazat vše',cls:'modal-btn-danger',fn:()=>{
-      planned=[]; done=[];
-      localStorage.setItem('planned','[]');
-      localStorage.setItem('done','[]');
-      updateAll(); showToast('Vše smazáno');
-    }},
+    {label:'Smazat vše',cls:'modal-btn-danger',fn:()=>{ planned=[]; done=[]; localStorage.setItem('planned','[]'); localStorage.setItem('done','[]'); updateAll(); showToast('Vše smazáno'); }},
     {label:'Zrušit',cls:'modal-btn-cancel',fn:null}
   ]);
 }
 
-// ── LIST TAB ──────────────────────────────────────────────────────────────────
 function renderList(){
-  const pl=document.getElementById('plannedList');
-  const dl=document.getElementById('doneList');
+  const pl=document.getElementById('plannedList'),dl=document.getElementById('doneList');
   document.getElementById('plannedCount').textContent=planned.length?planned.length+' '+smenLabel(planned.length):'';
   document.getElementById('doneCount').textContent=done.length?done.length+' '+smenLabel(done.length):'';
-  if(planned.length===0){pl.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Žádné plánované směny.</p></div>';}
-  else{pl.innerHTML=planned.map((s,i)=>{
+  pl.innerHTML=planned.length===0?'<div class="empty"><div class="empty-icon">📅</div><p>Žádné plánované směny.</p></div>':planned.map((s,i)=>{
     const[y,m,d]=s.date.split('-').map(Number);
-    return `<div class="shift-item">
-      <div class="shift-badge planned"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
-      <div class="shift-info"><div class="shift-time">${s.start} – ${s.end}</div><div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div></div>
-      <div class="shift-actions">
-        <button class="icon-btn check" onclick="openConfirmFinish(${i})">✔</button>
-        <button class="icon-btn del" onclick="confirmDeletePlanned(${i})">✕</button>
-      </div>
-    </div>`;
-  }).join('');}
-  if(done.length===0){dl.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Žádné odpracované směny.</p></div>';}
-  else{dl.innerHTML=done.map(s=>{
+    return `<div class="shift-item"><div class="shift-badge planned"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div><div class="shift-info"><div class="shift-time">${s.start} – ${s.end}</div><div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div></div><div class="shift-actions"><button class="icon-btn check" onclick="openConfirmFinish(${i})">✔</button><button class="icon-btn del" onclick="confirmDeletePlanned(${i})">✕</button></div></div>`;
+  }).join('');
+  dl.innerHTML=done.length===0?'<div class="empty"><div class="empty-icon">✅</div><p>Žádné odpracované směny.</p></div>':done.map(s=>{
     const[y,m,d]=s.date.split('-').map(Number);
-    return `<div class="shift-item">
-      <div class="shift-badge done"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
-      <div class="shift-info"><div class="shift-time">${s.start} – ${s.end}</div><div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div></div>
-      <div class="shift-actions"><button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')">✕</button></div>
-    </div>`;
-  }).join('');}
+    return `<div class="shift-item"><div class="shift-badge done"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div><div class="shift-info"><div class="shift-time">${s.start} – ${s.end}</div><div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div></div><div class="shift-actions"><button class="icon-btn del" onclick="confirmDeleteDone('${s.id}')">✕</button></div></div>`;
+  }).join('');
 }
 
-// ── EXPORT TAB ────────────────────────────────────────────────────────────────
 let exportPeriod='all';
 function setPeriod(p){
   exportPeriod=p;
@@ -917,31 +901,20 @@ function getFiltered(){
   return done.filter(s=>{
     const d=parseDate(s.date);
     if(exportPeriod==='month') return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
-    if(exportPeriod==='week'){
-      const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0);
-      const eow=new Date(sow); eow.setDate(sow.getDate()+6);
-      return d>=sow&&d<=eow;
-    }
+    if(exportPeriod==='week'){ const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0); const eow=new Date(sow); eow.setDate(sow.getDate()+6); return d>=sow&&d<=eow; }
     return true;
   });
 }
 function buildExportText(){
   const f=getFiltered();
   if(f.length===0) return '— žádné záznamy —';
-  const lines=f.map(s=>{
-    const[y,m,d]=s.date.split('-').map(Number);
-    const dur=calcDur(s.start,s.end);
-    const durFmt=dur%1===0?dur:dur.toFixed(1);
-    return `${d}.${m}.  ${s.start}–${s.end}   ${durFmt} hod`;
-  });
+  const lines=f.map(s=>{ const[y,m,d]=s.date.split('-').map(Number); const dur=calcDur(s.start,s.end); return `${d}.${m}.  ${s.start}–${s.end}   ${dur%1===0?dur:dur.toFixed(1)} hod`; });
   const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
-  const totalFmt=total%1===0?total:total.toFixed(1);
-  lines.push(''); lines.push(`Celkem: ${totalFmt} hodin / ${f.length} ${smenLabel(f.length)}`);
+  lines.push(''); lines.push(`Celkem: ${total%1===0?total:total.toFixed(1)} hodin / ${f.length} ${smenLabel(f.length)}`);
   return lines.join('\n');
 }
 function renderExport(){
-  const f=getFiltered();
-  const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
+  const f=getFiltered(); const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
   document.getElementById('sumShifts').textContent=f.length;
   document.getElementById('sumShiftsLbl').textContent=smenLabel(f.length);
   document.getElementById('sumHours').textContent=total%1===0?total:total.toFixed(1);
@@ -950,12 +923,10 @@ function renderExport(){
 function copyMsg(){
   const text=buildExportText();
   if(text==='— žádné záznamy —'){openModal('Nic k exportu','V tomto období nejsou žádné odpracované směny.','',[{label:'OK',cls:'modal-btn-cancel',fn:null}]);return;}
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(()=>showToast('✅ Zkopírováno')).catch(()=>fallbackCopy(text));
-  } else fallbackCopy(text);
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('✅ Zkopírováno')).catch(()=>fallbackCopy(text)); } else fallbackCopy(text);
 }
 function fallbackCopy(text){
-  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px';
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;left:-9999px';
   document.body.appendChild(ta); ta.focus(); ta.select();
   try{document.execCommand('copy');showToast('✅ Zkopírováno');}catch(e){alert(text);}
   document.body.removeChild(ta);
@@ -963,10 +934,9 @@ function fallbackCopy(text){
 function copyScript(){
   const code=document.getElementById('scriptCode').textContent;
   if(navigator.clipboard){navigator.clipboard.writeText(code).then(()=>showToast('✅ Kód zkopírován'));}
-  else{const ta=document.createElement('textarea');ta.value=code;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✅ Kód zkopírován');}
+  else{const ta=document.createElement('textarea');ta.value=code;ta.style.cssText='position:fixed;left:-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✅ Kód zkopírován');}
 }
 
-// ── HEADER ────────────────────────────────────────────────────────────────────
 function renderHeader(){
   const now=new Date();
   const m=done.filter(s=>{const d=parseDate(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
@@ -975,7 +945,6 @@ function renderHeader(){
   document.getElementById('hdrSub').textContent=MONTHS_GEN[now.getMonth()]+' '+now.getFullYear();
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
 function switchTab(t){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
@@ -985,116 +954,85 @@ function switchTab(t){
   if(t==='list') renderList();
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
 function updateAll(){
   renderCal(); renderList(); renderHeader();
   if(document.getElementById('sec-export').classList.contains('active')) renderExport();
 }
 
-// Restore script URL + auto-sync on load
-if(scriptUrl){
-  document.getElementById('scriptUrl').value=scriptUrl;
-  updateSheetsStatus();
-  autoSyncFromSheets(true);
-}
+// init
+if(scriptUrl){ document.getElementById('scriptUrl').value=scriptUrl; updateSheetsStatus(); autoSyncFromSheets(true); }
 updateAll();
-
-// Periodic sync every 5 minutes when tab is visible
-setInterval(()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); }, 5*60*1000);
+setInterval(()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); },5*60*1000);
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); });
 
-// ── PULL TO REFRESH PRO IPHONE (MODERNÍ iOS STYL) ───────────────────────────
+// ── PULL TO REFRESH ───────────────────────────────────────────────────────────
 (() => {
-  let touchStartPercent = 0;
-  let isAtTop = false;
+  const ind   = document.getElementById('ptr-indicator');
+  const ring  = ind.querySelector('#ptr-ring circle');
+  const CIRCUM = 62.8; // 2π×10
+  const THRESHOLD = 80; // px to trigger
+  const MAX_PULL  = 120;
 
-  // Styly pro animaci točení (vložíme přímo do stránky)
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes ios-spin {
-      0% { transform: translateX(-50%) rotate(0deg); }
-      100% { transform: translateX(-50%) rotate(360deg); }
-    }
-    .ios-refresh-spinner.spinning {
-      animation: ios-spin 0.8s linear infinite !important;
-    }
-  `;
-  document.head.appendChild(style);
+  let startY = 0;
+  let pulling = false;
+  let triggered = false;
 
-  // Vytvoření moderního indikátoru (iOS styl)
-  const refreshIndicator = document.createElement('div');
-  refreshIndicator.className = 'ios-refresh-spinner';
-  refreshIndicator.style.cssText = `
-    position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
-    width: 36px; height: 36px; background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999; transition: top 0.25s ease, transform 0.05s linear;
-    pointer-events: none; border: 1px solid rgba(0,0,0,0.05);
-  `;
+  function setProgress(ratio) {
+    // ratio 0→1: arc fills up
+    const offset = CIRCUM * (1 - Math.min(ratio, 1));
+    ring.style.strokeDashoffset = offset;
+    // rotate ring slightly as user pulls (feels alive)
+    ring.style.transform = `rotate(${-90 + ratio * 60}deg)`;
+  }
 
-  // Vnitřní kroužek (čára)
-  const spinnerCircle = document.createElement('div');
-  spinnerCircle.style.cssText = `
-    width: 18px; height: 18px;
-    border: 2px solid #007aff; /* iOS modrá barva */
-    border-top-color: transparent;
-    border-radius: 50%;
-    transition: transform 0.1s linear;
-  `;
-  refreshIndicator.appendChild(spinnerCircle);
-  document.body.appendChild(refreshIndicator);
+  function show()  { ind.classList.add('visible'); }
+  function hide()  { ind.classList.remove('visible','loading','done'); setProgress(0); ring.style.transform='rotate(-90deg)'; }
 
-  window.addEventListener('touchstart', (e) => {
-    isAtTop = (window.scrollY === 0);
-    if (isAtTop) {
-      touchStartPercent = e.touches[0].clientY;
-      refreshIndicator.classList.remove('spinning');
+  document.addEventListener('touchstart', e => {
+    if (window.scrollY > 0) return;
+    startY   = e.touches[0].clientY;
+    pulling  = true;
+    triggered= false;
+    ind.classList.remove('loading','done');
+    setProgress(0);
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { hide(); return; }
+
+    const ratio = Math.min(dy / MAX_PULL, 1);
+    show();
+    setProgress(ratio);
+
+    if (dy >= THRESHOLD && !triggered) {
+      triggered = true;
+      // haptic-like: brief scale pop
+      ind.style.transition = 'transform .12s cubic-bezier(.34,1.56,.64,1), opacity .2s';
+      ind.style.transform  = 'translateX(-50%) scale(1.15)';
+      setTimeout(() => { ind.style.transform = 'translateX(-50%) scale(1)'; }, 120);
     }
   }, { passive: true });
 
-  window.addEventListener('touchmove', (e) => {
-    if (!isAtTop || refreshIndicator.classList.contains('spinning')) return;
+  document.addEventListener('touchend', async () => {
+    if (!pulling) return;
+    pulling = false;
 
-    const currentY = e.touches[0].clientY;
-    const pullDistance = currentY - touchStartPercent;
+    if (!triggered) { hide(); return; }
 
-    if (pullDistance > 0 && pullDistance < 140) {
-      // Plynulé stažení dolů (max do 24px od vrchu)
-      const targetTop = -50 + (pullDistance / 1.8);
-      refreshIndicator.style.top = `${Math.min(24, targetTop)}px`;
-      
-      // Otáčení vnitřního kroužku podle toho, jak moc uživatel táhne
-      spinnerCircle.style.transform = `rotate(${pullDistance * 2.5}deg)`;
-    }
-  }, { passive: true });
+    // Switch to loading spinner
+    ind.classList.add('loading');
+    ring.style.strokeDashoffset = '0';
+    ring.style.transform = 'rotate(-90deg)';
+    ring.style.transition = 'none';
 
-  window.addEventListener('touchend', async (e) => {
-    if (!isAtTop) return;
+    await manualSync();
 
-    const currentY = e.changedTouches[0].clientY;
-    const pullDistance = currentY - touchStartPercent;
-
-    // Pokud potáhl dostatečně (aspoň 90px)
-    if (pullDistance > 90) {
-      refreshIndicator.style.top = '24px';
-      refreshIndicator.classList.add('spinning'); // Spustí nekonečné moderní točení
-
-      if (typeof manualSync === 'function') {
-        await manualSync();
-      }
-    }
-
-    // Schování indikátoru s plynulým dojezdem
-    setTimeout(() => {
-      refreshIndicator.style.top = '-50px';
-      setTimeout(() => {
-        refreshIndicator.classList.remove('spinning');
-      }, 250);
-    }, 400);
-    
-    isAtTop = false;
+    // Done — show checkmark briefly
+    ind.classList.remove('loading');
+    ind.classList.add('done');
+    setTimeout(hide, 900);
   }, { passive: true });
 })();
 </script>

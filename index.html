@@ -932,7 +932,7 @@ function buildExportText(){
     const[y,m,d]=s.date.split('-').map(Number);
     const dur=calcDur(s.start,s.end);
     const durFmt=dur%1===0?dur:dur.toFixed(1);
-    return `${d}.${m}.  ${s.start}–${s.end}   ${durFmt} hod${s.note?'  ('+s.note+')':''}`;
+    return `${d}.${m}.  ${s.start}–${s.end}   ${durFmt} hod`;
   });
   const total=f.reduce((sum,s)=>sum+calcDur(s.start,s.end),0);
   const totalFmt=total%1===0?total:total.toFixed(1);

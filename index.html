@@ -558,11 +558,35 @@ async function autoSyncFromSheets(silent){
     return;
   }
   planned=[]; done=[];
+  
+  // Získání aktuálního data a času pro porovnání
+  const n = new Date();
+  const dnesniDatum = n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());
+  const aktualniCasvMinutach = n.getHours() * 60 + n.getMinutes();
+
   rows.forEach(r=>{
     const item={id:String(r.id),date:String(r.datum),start:String(r.start),end:String(r.end),note:String(r.poznamka||'')};
-    if(r.typ==='planned') planned.push(item);
+    
+    if(r.typ==='planned'){
+      // Zjistíme, zda směna probíhá právě teď
+      if(item.date === dnesniDatum){
+        const [sh, sm] = item.start.split(':').map(Number);
+        const [eh, em] = item.end.split(':').map(Number);
+        const startMinuty = sh * 60 + sm;
+        let konecMinuty = eh * 60 + em;
+        
+        // Ošetření pokud směna končí až po půlnoci (např. 22:00 - 06:00)
+        if(konecMinuty < startMinuty) konecMinuty += 1440; 
+        
+        if(aktualniCasvMinutach >= startMinuty && aktualniCasvMinutach <= konecMinuty){
+          item.isCurrent = true; // Označíme směnu, že právě PROBÍHÁ
+        }
+      }
+      planned.push(item);
+    }
     else if(r.typ==='done') done.push(item);
   });
+  
   planned.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   done.sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
   localStorage.setItem('planned',JSON.stringify(planned));
@@ -571,10 +595,6 @@ async function autoSyncFromSheets(silent){
   setSyncStatus('ok','Synchronizováno');
   updateSheetsStatus(true);
   if(!silent) showToast('✅ Data synchronizována');
-}
-
-async function manualSync(){
-  await autoSyncFromSheets(false);
 }
 
 // ── CONNECTION TEST ───────────────────────────────────────────────────────────
@@ -880,18 +900,39 @@ function renderList(){
   const dl=document.getElementById('doneList');
   document.getElementById('plannedCount').textContent=planned.length?planned.length+' '+smenLabel(planned.length):'';
   document.getElementById('doneCount').textContent=done.length?done.length+' '+smenLabel(done.length):'';
+  
   if(planned.length===0){pl.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Žádné plánované směny.</p></div>';}
-  else{pl.innerHTML=planned.map((s,i)=>{
-    const[y,m,d]=s.date.split('-').map(Number);
-    return `<div class="shift-item">
-      <div class="shift-badge planned"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
-      <div class="shift-info"><div class="shift-time">${s.start} – ${s.end}</div><div class="shift-meta">${fmtDur(calcDur(s.start,s.end))}${s.note?' · '+s.note:''}</div></div>
-      <div class="shift-actions">
-        <button class="icon-btn check" onclick="openConfirmFinish(${i})">✔</button>
-        <button class="icon-btn del" onclick="confirmDeletePlanned(${i})">✕</button>
-      </div>
-    </div>`;
-  }).join('');}
+  else{
+    const now=new Date(); 
+    const nowMins=now.getHours()*60+now.getMinutes();
+    const today=todayStr();
+
+    pl.innerHTML=planned.map((s,i)=>{
+      const[y,m,d]=s.date.split('-').map(Number);
+      
+      // KONTROLA: Zda směna probíhá právě teď
+      const isToday = s.date === today;
+      const[sh,sm]=s.start.split(':').map(Number),[eh,em]=s.end.split(':').map(Number);
+      const inProgress = isToday && nowMins >= sh*60+sm && nowMins < eh*60+em;
+      
+      // Nastavení správných CSS tříd a textů podle toho, zda směna běží
+      const badgeCls = inProgress ? 'active-now' : 'planned';
+      const metaTxt = inProgress ? 'Právě probíhá' : fmtDur(calcDur(s.start,s.end));
+
+      return `<div class="shift-item">
+        <div class="shift-badge ${badgeCls}"><div class="day">${d}</div><div class="mon">${MONTHS_SHORT[m-1]}</div></div>
+        <div class="shift-info">
+          <div class="shift-time">${s.start} – ${s.end}</div>
+          <div class="shift-meta" style="${inProgress ? 'color:var(--success, #2ec4b6); font-weight:bold;' : ''}">${metaTxt}${s.note?' · '+s.note:''}</div>
+        </div>
+        <div class="shift-actions">
+          <button class="icon-btn check" onclick="openConfirmFinish(${i})">✔</button>
+          <button class="icon-btn del" onclick="confirmDeletePlanned(${i})">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  
   if(done.length===0){dl.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Žádné odpracované směny.</p></div>';}
   else{dl.innerHTML=done.map(s=>{
     const[y,m,d]=s.date.split('-').map(Number);

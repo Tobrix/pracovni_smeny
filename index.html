@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Směny">
@@ -255,12 +254,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .info-box-icon{flex-shrink:0;font-size:14px;margin-top:1px}
 
 /* ── PULL TO REFRESH ── */
-@keyframes ptr-spin {
+@keyframes ptr-rotate {
   to { transform: rotate(360deg); }
-}
-@keyframes ptr-appear {
-  from { opacity:0; transform:scale(.7); }
-  to   { opacity:1; transform:scale(1); }
 }
 
 #ptr-indicator {
@@ -285,42 +280,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
   opacity:1;
   transform:translateX(-50%) scale(1);
 }
-/* SVG arc ring */
+
+/* Progress ring — fills as user pulls */
 #ptr-ring {
   width:24px; height:24px;
-  transition:none;
+  display:block;
 }
 #ptr-ring circle {
   fill:none;
   stroke:var(--accent);
   stroke-width:2.5;
   stroke-linecap:round;
-  stroke-dasharray: 62.8; /* circumference ~ 2π×10 */
-  stroke-dashoffset: 62.8;
-  transform-origin:center;
+  stroke-dasharray:62.8;
+  stroke-dashoffset:62.8;
+  transform-origin:12px 12px;
   transform:rotate(-90deg);
-  transition:stroke-dashoffset .15s linear;
+  transition:stroke-dashoffset .12s linear;
 }
-#ptr-indicator.loading #ptr-ring circle {
+
+/* Loading spinner — separate rotating wrapper, partial arc */
+#ptr-spinner {
+  display:none;
+  width:24px; height:24px;
+  animation:ptr-rotate .7s linear infinite;
+}
+#ptr-spinner circle {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.5;
+  stroke-linecap:round;
+  /* ~¾ of circumference = 47, gap = 15.8 */
+  stroke-dasharray:47 15.8;
   stroke-dashoffset:0;
-  animation:ptr-spin .75s linear infinite;
-  transition:none;
+  transform-origin:12px 12px;
 }
-#ptr-indicator.done #ptr-ring circle {
-  stroke:var(--success);
-  stroke-dashoffset:0;
-  animation:none;
-}
-/* Checkmark inside when done */
+
+#ptr-indicator.loading #ptr-ring    { display:none; }
+#ptr-indicator.loading #ptr-spinner { display:block; }
+
+/* Done state */
 #ptr-check {
-  position:absolute;
   display:none;
   color:var(--success);
-  font-size:14px;
+  font-size:15px;
   font-weight:700;
+  line-height:1;
 }
-#ptr-indicator.done #ptr-check { display:flex; }
-#ptr-indicator.done #ptr-ring  { display:none; }
+#ptr-indicator.done #ptr-ring    { display:none; }
+#ptr-indicator.done #ptr-spinner { display:none; }
+#ptr-indicator.done #ptr-check   { display:flex; }
 </style>
 </head>
 <body>
@@ -329,9 +337,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 
 <!-- Pull-to-refresh indicator -->
 <div id="ptr-indicator">
+  <!-- Progress arc (fills while pulling) -->
   <svg id="ptr-ring" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="9"/>
   </svg>
+  <!-- Spinning arc (shown while loading) -->
+  <svg id="ptr-spinner" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+  </svg>
+  <!-- Checkmark (shown when done) -->
   <span id="ptr-check">✓</span>
 </div>
 
@@ -968,32 +982,32 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUr
 
 // ── PULL TO REFRESH ───────────────────────────────────────────────────────────
 (() => {
-  const ind   = document.getElementById('ptr-indicator');
-  const ring  = ind.querySelector('#ptr-ring circle');
-  const CIRCUM = 62.8; // 2π×10
-  const THRESHOLD = 80; // px to trigger
+  const ind      = document.getElementById('ptr-indicator');
+  const ringCirc = document.querySelector('#ptr-ring circle');
+  const CIRCUM   = 62.8; // 2π×9
+  const THRESHOLD = 80;
   const MAX_PULL  = 120;
 
-  let startY = 0;
-  let pulling = false;
-  let triggered = false;
+  let startY   = 0;
+  let pulling  = false;
+  let triggered= false;
 
   function setProgress(ratio) {
-    // ratio 0→1: arc fills up
-    const offset = CIRCUM * (1 - Math.min(ratio, 1));
-    ring.style.strokeDashoffset = offset;
-    // rotate ring slightly as user pulls (feels alive)
-    ring.style.transform = `rotate(${-90 + ratio * 60}deg)`;
+    const clamped = Math.min(ratio, 1);
+    ringCirc.style.strokeDashoffset = CIRCUM * (1 - clamped);
   }
 
-  function show()  { ind.classList.add('visible'); }
-  function hide()  { ind.classList.remove('visible','loading','done'); setProgress(0); ring.style.transform='rotate(-90deg)'; }
+  function show() { ind.classList.add('visible'); }
+  function hide() {
+    ind.classList.remove('visible','loading','done');
+    ringCirc.style.strokeDashoffset = CIRCUM;
+  }
 
   document.addEventListener('touchstart', e => {
     if (window.scrollY > 0) return;
-    startY   = e.touches[0].clientY;
-    pulling  = true;
-    triggered= false;
+    startY    = e.touches[0].clientY;
+    pulling   = true;
+    triggered = false;
     ind.classList.remove('loading','done');
     setProgress(0);
   }, { passive: true });
@@ -1003,16 +1017,18 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUr
     const dy = e.touches[0].clientY - startY;
     if (dy <= 0) { hide(); return; }
 
-    const ratio = Math.min(dy / MAX_PULL, 1);
     show();
-    setProgress(ratio);
+    setProgress(dy / MAX_PULL);
 
     if (dy >= THRESHOLD && !triggered) {
       triggered = true;
-      // haptic-like: brief scale pop
-      ind.style.transition = 'transform .12s cubic-bezier(.34,1.56,.64,1), opacity .2s';
-      ind.style.transform  = 'translateX(-50%) scale(1.15)';
-      setTimeout(() => { ind.style.transform = 'translateX(-50%) scale(1)'; }, 120);
+      // small bounce to signal "ready to release"
+      ind.style.transition = 'transform .15s cubic-bezier(.34,1.56,.64,1), opacity .2s';
+      ind.style.transform  = 'translateX(-50%) scale(1.18)';
+      setTimeout(() => {
+        ind.style.transition = 'transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s';
+        ind.style.transform  = 'translateX(-50%) scale(1)';
+      }, 150);
     }
   }, { passive: true });
 
@@ -1022,15 +1038,12 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUr
 
     if (!triggered) { hide(); return; }
 
-    // Switch to loading spinner
+    // Show spinning arc
     ind.classList.add('loading');
-    ring.style.strokeDashoffset = '0';
-    ring.style.transform = 'rotate(-90deg)';
-    ring.style.transition = 'none';
 
     await manualSync();
 
-    // Done — show checkmark briefly
+    // Show checkmark
     ind.classList.remove('loading');
     ind.classList.add('done');
     setTimeout(hide, 900);

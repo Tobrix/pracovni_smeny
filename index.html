@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="shortcut icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Směny">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <title>Směny</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -25,11 +23,13 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
 
+/* SYNC BAR */
 .sync-bar{height:3px;background:var(--accent2);position:fixed;top:0;left:0;right:0;z-index:100;overflow:hidden;display:none}
 .sync-bar.active{display:block}
 .sync-bar-fill{height:100%;background:var(--accent);animation:syncprogress 1.2s ease-in-out infinite}
 @keyframes syncprogress{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 
+/* HEADER */
 .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px 10px;padding-top:calc(var(--safe-top) + 12px);position:sticky;top:0;z-index:20}
 .hdr-row{display:flex;align-items:center;justify-content:space-between}
 .hdr h1{font-size:20px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
@@ -44,31 +44,94 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .sync-dot.syncing{background:var(--warn);animation:pulse .8s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
+/* CONTENT */
 .content{flex:1;padding:12px 12px calc(var(--safe-bot) + 88px);display:flex;flex-direction:column;gap:10px;overflow-x:hidden}
 
+/* CARD */
 .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px}
 .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 
+/* FORM — FIX: time input vertically centered */
 .field{margin-bottom:10px}
 .field label{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:5px}
-.field input,.field select,.field textarea{
-  width:100%;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:15px;
-  color:var(--text);background:var(--bg);font-family:inherit;outline:none;-webkit-appearance:none;appearance:none;
+
+/* All inputs share this base */
+.field input,
+.field select,
+.field textarea {
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:0 12px;
+  font-size:15px;
+  color:var(--text);
+  background:var(--bg);
+  font-family:inherit;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
 }
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
-.field input[type="text"],.field input[type="url"],.field input[type="email"]{height:44px;line-height:44px;}
-.field input[type="time"]{height:44px;display:flex;align-items:center;padding-top:0;padding-bottom:0;-webkit-align-items:center;}
-.field input[type="time"]::-webkit-datetime-edit{display:flex;align-items:center;height:100%;padding:0;}
-.field input[type="time"]::-webkit-datetime-edit-fields-wrapper{display:flex;align-items:center;}
-.field input[type="date"]{height:44px;line-height:44px;}
-.field textarea{height:auto;min-height:60px;padding:10px 12px;resize:none;line-height:1.5;}
-.field select{height:44px;line-height:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* Standard text inputs */
+.field input[type="text"],
+.field input[type="url"],
+.field input[type="email"] {
+  height:44px;
+  line-height:44px;
+}
+
+/* TIME INPUT — key fix: use flex centering, not line-height */
+.field input[type="time"] {
+  height:44px;
+  /* Remove line-height trick; use flexbox instead */
+  display:flex;
+  align-items:center;
+  /* iOS Safari needs padding reset */
+  padding-top:0;
+  padding-bottom:0;
+  /* Webkit internal parts alignment */
+  -webkit-align-items:center;
+}
+
+/* Webkit time picker internal part centering */
+.field input[type="time"]::-webkit-datetime-edit {
+  display:flex;
+  align-items:center;
+  height:100%;
+  padding:0;
+}
+.field input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  display:flex;
+  align-items:center;
+}
+.field input[type="time"]::-webkit-datetime-edit-text,
+.field input[type="time"]::-webkit-datetime-edit-hour-field,
+.field input[type="time"]::-webkit-datetime-edit-minute-field,
+.field input[type="time"]::-webkit-datetime-edit-ampm-field {
+  display:flex;
+  align-items:center;
+}
+
+.field textarea{
+  height:auto;min-height:60px;
+  padding:10px 12px;
+  resize:none;line-height:1.5;
+}
+.field select{
+  height:44px;
+  line-height:44px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px
+}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
+/* DURATION PREVIEW */
 .dur-preview{background:var(--accent2);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--accent);font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px}
 .dur-preview.hidden{display:none}
 .dur-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
 
+/* BUTTONS */
 .btn{width:100%;height:48px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn:active{opacity:.82;transform:scale(.98)}
 .btn-primary{background:var(--accent);color:#fff}
@@ -76,9 +139,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .btn-danger-outline{background:none;color:var(--danger);border:1.5px solid var(--danger)}
 .btn-sm{height:36px;font-size:13px;border-radius:9px}
 
+/* TOAST */
 .toast{position:fixed;bottom:calc(var(--safe-bot) + 96px);left:50%;transform:translateX(-50%) translateY(16px);background:#111;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:200}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:auto}
 .modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:92dvh;overflow-y:auto;transform:translateY(40px);transition:transform .25s}
@@ -91,6 +156,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .modal-btn-danger{background:var(--danger);color:#fff}
 .modal-btn-cancel{background:var(--bg);color:var(--text)}
 
+/* CALENDAR */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-nav-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:9px;background:none;cursor:pointer;font-size:18px;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;color:var(--text)}
 .cal-month{font-size:15px;font-weight:700}
@@ -106,6 +172,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .cal-bar.done{background:var(--success)}
 .cal-bar.active-shift{background:var(--warn)}
 
+/* SHIFT ITEMS */
 .shift-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .shift-item:last-child{border-bottom:none;padding-bottom:0}
 .shift-item:first-child{padding-top:0}
@@ -128,48 +195,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .icon-btn.edit{background:var(--accent2)}
 .icon-btn.del{background:var(--danger-bg)}
 
+/* STATUS PILLS */
 .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
 .pill.planned{background:var(--planned-bg);color:var(--planned)}
 .pill.done{background:var(--success-bg);color:var(--success)}
 .pill.active{background:var(--warn-bg);color:var(--warn)}
 
+/* SUMMARY BOXES */
 .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .sum-box{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
 .sum-box .val{font-size:22px;font-weight:700}
 .sum-box .lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
 
-/* PERIOD ROW — 4 buttons, wraps nicely */
-.period-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-.period-btn{flex:1;min-width:60px;height:34px;border:1.5px solid var(--border);border-radius:8px;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;-webkit-appearance:none;transition:all .12s;white-space:nowrap}
-.period-btn.active{border-color:var(--accent);background:var(--accent2);color:var(--accent);font-weight:700}
+/* PERIOD BUTTONS */
+.period-row{display:flex;gap:6px;margin-bottom:12px}
+.period-btn{flex:1;height:34px;border:1.5px solid var(--border);border-radius:8px;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;-webkit-appearance:none;transition:all .12s}
+.period-btn.active{border-color:var(--accent);background:var(--accent2);color:var(--accent)}
 
-/* CUSTOM DATE RANGE PICKER */
-.date-range-picker{background:var(--bg);border-radius:12px;padding:12px;margin-top:4px;border:1.5px solid var(--accent);display:none;flex-direction:column;gap:10px;animation:fadeIn .18s ease}
-.date-range-picker.open{display:flex}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.date-range-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.date-range-label{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
-.date-range-apply{height:38px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%}
-.date-range-apply:active{opacity:.82}
-/* Custom range active label */
-.custom-range-label{font-size:11px;color:var(--accent);font-weight:600;background:var(--accent2);padding:4px 10px;border-radius:20px;margin-top:2px;display:none}
-.custom-range-label.show{display:inline-flex;align-items:center;gap:4px}
-
+/* SECTION VISIBILITY */
 .section{display:none;flex-direction:column;gap:10px}
 .section.active{display:flex}
 
+/* TAB BAR */
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:calc(var(--safe-bot) + 4px);z-index:20}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;gap:3px;cursor:pointer;border:none;background:none;font-family:inherit;-webkit-appearance:none}
 .tab-icon{font-size:22px;line-height:1}
 .tab-lbl{font-size:10px;font-weight:500;color:var(--muted)}
 .tab.active .tab-lbl{color:var(--accent);font-weight:700}
 
+/* EMPTY */
 .empty{text-align:center;padding:24px 12px;color:var(--muted)}
 .empty-icon{font-size:32px;margin-bottom:8px}
 .empty p{font-size:13px;line-height:1.6}
 
+/* EXPORT PREVIEW */
 .export-preview{background:var(--bg);border-radius:10px;padding:12px;font-size:13px;color:var(--text);line-height:1.9;white-space:pre-wrap;word-break:break-word;font-family:'Menlo','Courier New',monospace;border:1px solid var(--border);max-height:260px;overflow-y:auto;margin-bottom:10px}
 
+/* SHEETS BANNER */
 .sheets-banner{background:linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%);border-radius:var(--radius);padding:14px;color:#fff;display:flex;align-items:flex-start;gap:12px}
 .sheets-banner-icon{font-size:28px;flex-shrink:0;margin-top:2px}
 .sheets-banner-text h3{font-size:14px;font-weight:700;margin-bottom:4px}
@@ -180,36 +242,110 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
 .status-dot.err{background:#fca5a5}
 .status-dot.warn{background:#fcd34d}
 
+/* SETUP FORM */
 .setup-field{margin-bottom:10px}
 .setup-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:5px}
 .setup-field input{width:100%;height:42px;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;-webkit-appearance:none;background:var(--bg);color:var(--text)}
 .setup-field input:focus{border-color:var(--accent);background:#fff}
 .setup-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
 
+/* INFO BOX */
 .info-box{background:var(--accent2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--accent);line-height:1.6;display:flex;gap:8px;align-items:flex-start}
 .info-box-icon{flex-shrink:0;font-size:14px;margin-top:1px}
 
-@keyframes ptr-rotate{to{transform:rotate(360deg)}}
-#ptr-indicator{position:fixed;top:calc(var(--safe-top) + 14px);left:50%;transform:translateX(-50%) scale(0);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 4px 16px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:center;z-index:9999;pointer-events:none;opacity:0;will-change:transform,opacity;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s}
-#ptr-indicator.visible{opacity:1;transform:translateX(-50%) scale(1)}
-#ptr-ring{width:24px;height:24px;display:block}
-#ptr-ring circle{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:62.8;stroke-dashoffset:62.8;transform-origin:12px 12px;transform:rotate(-90deg);transition:stroke-dashoffset .12s linear}
-#ptr-spinner{display:none;width:24px;height:24px;animation:ptr-rotate .7s linear infinite}
-#ptr-spinner circle{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:47 15.8;stroke-dashoffset:0;transform-origin:12px 12px}
-#ptr-indicator.loading #ptr-ring{display:none}
-#ptr-indicator.loading #ptr-spinner{display:block}
-#ptr-check{display:none;color:var(--success);font-size:15px;font-weight:700;line-height:1}
-#ptr-indicator.done #ptr-ring,#ptr-indicator.done #ptr-spinner{display:none}
-#ptr-indicator.done #ptr-check{display:flex}
+/* ── PULL TO REFRESH ── */
+@keyframes ptr-rotate {
+  to { transform: rotate(360deg); }
+}
+
+#ptr-indicator {
+  position:fixed;
+  top: calc(var(--safe-top) + 14px);
+  left:50%;
+  transform:translateX(-50%) scale(0);
+  width:40px; height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 4px 16px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.04);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+}
+#ptr-indicator.visible {
+  opacity:1;
+  transform:translateX(-50%) scale(1);
+}
+
+/* Progress ring — fills as user pulls */
+#ptr-ring {
+  width:24px; height:24px;
+  display:block;
+}
+#ptr-ring circle {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-dasharray:62.8;
+  stroke-dashoffset:62.8;
+  transform-origin:12px 12px;
+  transform:rotate(-90deg);
+  transition:stroke-dashoffset .12s linear;
+}
+
+/* Loading spinner — separate rotating wrapper, partial arc */
+#ptr-spinner {
+  display:none;
+  width:24px; height:24px;
+  animation:ptr-rotate .7s linear infinite;
+}
+#ptr-spinner circle {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.5;
+  stroke-linecap:round;
+  /* ~¾ of circumference = 47, gap = 15.8 */
+  stroke-dasharray:47 15.8;
+  stroke-dashoffset:0;
+  transform-origin:12px 12px;
+}
+
+#ptr-indicator.loading #ptr-ring    { display:none; }
+#ptr-indicator.loading #ptr-spinner { display:block; }
+
+/* Done state */
+#ptr-check {
+  display:none;
+  color:var(--success);
+  font-size:15px;
+  font-weight:700;
+  line-height:1;
+}
+#ptr-indicator.done #ptr-ring    { display:none; }
+#ptr-indicator.done #ptr-spinner { display:none; }
+#ptr-indicator.done #ptr-check   { display:flex; }
 </style>
 </head>
 <body>
 
 <div class="sync-bar" id="syncBar"><div class="sync-bar-fill"></div></div>
 
+<!-- Pull-to-refresh indicator -->
 <div id="ptr-indicator">
-  <svg id="ptr-ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
-  <svg id="ptr-spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+  <!-- Progress arc (fills while pulling) -->
+  <svg id="ptr-ring" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+  </svg>
+  <!-- Spinning arc (shown while loading) -->
+  <svg id="ptr-spinner" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+  </svg>
+  <!-- Checkmark (shown when done) -->
   <span id="ptr-check">✓</span>
 </div>
 
@@ -279,43 +415,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
   <div class="section" id="sec-export">
     <div class="card">
       <div class="card-title">Filtr období</div>
-
       <div class="period-row">
-        <button class="period-btn active" id="pAll"   onclick="setPeriod('all')">Vše</button>
-        <button class="period-btn"        id="pMonth" onclick="setPeriod('month')">Měsíc</button>
-        <button class="period-btn"        id="pWeek"  onclick="setPeriod('week')">Týden</button>
-        <button class="period-btn"        id="pCustom" onclick="toggleCustomPicker()">Vlastní</button>
+        <button class="period-btn active" id="pAll" onclick="setPeriod('all')">Vše</button>
+        <button class="period-btn" id="pMonth" onclick="setPeriod('month')">Měsíc</button>
+        <button class="period-btn" id="pWeek" onclick="setPeriod('week')">Týden</button>
+        <button class="period-btn" id="pCustom" onclick="setPeriod('custom')">Vlastní</button>
       </div>
-
-      <!-- Custom date range picker -->
-      <div class="date-range-picker" id="dateRangePicker">
-        <div class="date-range-label">Vlastní rozsah</div>
-        <div class="date-range-row">
-          <div class="field" style="margin-bottom:0">
-            <label>Od</label>
-            <input type="date" id="dateFrom" onchange="onCustomDateChange()">
-          </div>
-          <div class="field" style="margin-bottom:0">
-            <label>Do</label>
-            <input type="date" id="dateTo" onchange="onCustomDateChange()">
-          </div>
+      <div id="customRangeRow" style="display:none;gap:8px;margin-bottom:12px;align-items:flex-end">
+        <div class="field" style="margin-bottom:0;flex:1">
+          <label>Od</label>
+          <input type="date" id="customFrom" onchange="renderExport()">
         </div>
-        <button class="date-range-apply" onclick="applyCustomRange()">Použít rozsah</button>
-      </div>
-
-      <!-- Active custom range badge -->
-      <div class="custom-range-label" id="customRangeLabel">
-        <span>📅</span><span id="customRangeText"></span>
-      </div>
-
-      <div style="margin-top:12px">
-        <div class="sum-row">
-          <div class="sum-box"><div class="val" id="sumShifts">0</div><div class="lbl" id="sumShiftsLbl">směn</div></div>
-          <div class="sum-box"><div class="val" id="sumHours">0</div><div class="lbl">hodin</div></div>
+        <div class="field" style="margin-bottom:0;flex:1">
+          <label>Do</label>
+          <input type="date" id="customTo" onchange="renderExport()">
         </div>
+      </div>
+      <div class="sum-row">
+        <div class="sum-box"><div class="val" id="sumShifts">0</div><div class="lbl" id="sumShiftsLbl">směn</div></div>
+        <div class="sum-box"><div class="val" id="sumHours">0</div><div class="lbl">hodin</div></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">Náhled zprávy pro majitele</div>
       <div class="export-preview" id="exportPreview">—</div>
@@ -339,6 +459,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
         </div>
       </div>
     </div>
+
     <div class="card">
       <div class="card-title">Nastavení propojení</div>
       <div class="info-box" style="margin-bottom:12px">
@@ -354,6 +475,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;backg
       <div id="testResult" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>
       <button class="btn btn-primary" onclick="manualSync()">⟳ Synchronizovat nyní</button>
     </div>
+
     <div class="card">
       <div class="card-title">Jak nastavit Google Tabulky</div>
       <div style="font-size:13px;color:var(--text);line-height:1.7">
@@ -368,11 +490,14 @@ function doPost(e) { return handleRequest(e); }
 function handleRequest(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
+
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(["id","typ","datum","start","end","poznamka"]);
   }
+
   const action = (e.parameter && e.parameter.action) || "get";
+
   if (action === "add") {
     sheet.appendRow([
       e.parameter.id, e.parameter.typ, e.parameter.datum,
@@ -380,6 +505,7 @@ function handleRequest(e) {
     ]);
     return out({ok:true});
   }
+
   if (action === "delete") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
@@ -388,6 +514,7 @@ function handleRequest(e) {
     }
     return out({ok:true});
   }
+
   if (action === "update") {
     const id = e.parameter.id;
     const data = sheet.getDataRange().getDisplayValues();
@@ -402,14 +529,16 @@ function handleRequest(e) {
     }
     return out({ok:true});
   }
+
   const data = sheet.getDataRange().getDisplayValues();
   if (data.length <= 1) return out([]);
   const rows = data.slice(1).map(r => ({
-    id:String(r[0]),typ:String(r[1]),datum:String(r[2]),
-    start:String(r[3]),end:String(r[4]),poznamka:String(r[5])
+    id:String(r[0]), typ:String(r[1]), datum:String(r[2]),
+    start:String(r[3]), end:String(r[4]), poznamka:String(r[5])
   }));
   return out(rows);
 }
+
 function out(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
@@ -425,10 +554,18 @@ function out(obj) {
 </div>
 
 <div class="tabbar">
-  <button class="tab active" id="tab-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span><span class="tab-lbl">Kalendář</span></button>
-  <button class="tab" id="tab-list" onclick="switchTab('list')"><span class="tab-icon">📋</span><span class="tab-lbl">Přehled</span></button>
-  <button class="tab" id="tab-export" onclick="switchTab('export')"><span class="tab-icon">📤</span><span class="tab-lbl">Export</span></button>
-  <button class="tab" id="tab-settings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span><span class="tab-lbl">Nastavení</span></button>
+  <button class="tab active" id="tab-cal" onclick="switchTab('cal')">
+    <span class="tab-icon">📅</span><span class="tab-lbl">Kalendář</span>
+  </button>
+  <button class="tab" id="tab-list" onclick="switchTab('list')">
+    <span class="tab-icon">📋</span><span class="tab-lbl">Přehled</span>
+  </button>
+  <button class="tab" id="tab-export" onclick="switchTab('export')">
+    <span class="tab-icon">📤</span><span class="tab-lbl">Export</span>
+  </button>
+  <button class="tab" id="tab-settings" onclick="switchTab('settings')">
+    <span class="tab-icon">⚙️</span><span class="tab-lbl">Nastavení</span>
+  </button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -466,7 +603,6 @@ function fmtDur(h){
 function smenLabel(n){ if(n===1)return 'směna'; if(n>=2&&n<=4)return 'směny'; return 'směn'; }
 function todayStr(){ const n=new Date(); return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate()); }
 function parseDate(ds){ const[y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d); }
-function fmtDateCZ(ds){ const[y,m,d]=ds.split('-').map(Number); return d+'.'+m+'.'+y; }
 
 // ── SYNC STATUS ───────────────────────────────────────────────────────────────
 function setSyncStatus(state,text){
@@ -500,6 +636,7 @@ async function sheetsUpdate(item,typ){
     await fetch(scriptUrl+'?'+p,{mode:'cors'});
   }catch(e){}
 }
+
 async function autoSyncFromSheets(silent){
   if(!scriptUrl||_syncing) return;
   _syncing=true; setSyncStatus('syncing','Synchronizuji…');
@@ -652,7 +789,7 @@ function renderDayCard(){
   document.getElementById('calDayContent').innerHTML=html;
 }
 
-// ── ADD / EDIT / FINISH ───────────────────────────────────────────────────────
+// ── ADD SHIFT ─────────────────────────────────────────────────────────────────
 let addTargetDate=null;
 function openAddForDay(){
   addTargetDate=calSelected||todayStr();
@@ -666,6 +803,13 @@ function openAddForDay(){
     <div class="field" style="margin-top:10px"><label>Poznámka (nepovinné)</label><textarea id="mNote" placeholder="Pokladna, sklad…"></textarea></div>`,
     [{label:'Přidat',cls:'modal-btn-primary',fn:doAddShift},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
+  // Explicitně vymazat hodnoty — Safari může cachovat předchozí hodnoty
+  requestAnimationFrame(()=>{
+    const mS=document.getElementById('mStart');
+    const mE=document.getElementById('mEnd');
+    if(mS) mS.value='';
+    if(mE) mE.value='';
+  });
 }
 function mUpdateDur(){
   const s=document.getElementById('mStart')?.value,e=document.getElementById('mEnd')?.value;
@@ -689,13 +833,21 @@ function openEditPlanned(idx){
   const s=planned[idx];
   openModal('Upravit plánovanou směnu','',
     `<div class="two-col">
-      <div class="field"><label>Začátek</label><input type="time" id="eStart" value="${s.start}" oninput="eUpdateDur()"></div>
-      <div class="field"><label>Konec</label><input type="time" id="eEnd" value="${s.end}" oninput="eUpdateDur()"></div>
+      <div class="field"><label>Začátek</label><input type="time" id="eStart" oninput="eUpdateDur()"></div>
+      <div class="field"><label>Konec</label><input type="time" id="eEnd" oninput="eUpdateDur()"></div>
     </div>
     <div id="eDurPreview" class="dur-preview"><div class="dur-dot"></div><span id="eDurText">${fmtDur(calcDur(s.start,s.end))}</span></div>
     <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="eNote">${s.note||''}</textarea></div>`,
     [{label:'Uložit',cls:'modal-btn-primary',fn:()=>doEditPlanned(idx)},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
+  // Nastavit hodnoty přes JS po vložení do DOM — atribut value nefunguje spolehlivě u time inputů
+  requestAnimationFrame(()=>{
+    const eS=document.getElementById('eStart');
+    const eE=document.getElementById('eEnd');
+    if(eS) eS.value=s.start;
+    if(eE) eE.value=s.end;
+    eUpdateDur();
+  });
 }
 function eUpdateDur(){
   const s=document.getElementById('eStart')?.value,e=document.getElementById('eEnd')?.value;
@@ -717,13 +869,21 @@ function openConfirmFinish(idx){
   const now=new Date(); const nowTime=pad(now.getHours())+':'+pad(now.getMinutes());
   openModal('Potvrdit odpracování','Zkontroluj skutečný čas:',
     `<div class="two-col">
-      <div class="field"><label>Skutečný začátek</label><input type="time" id="fStart" value="${s.start}" oninput="fUpdateDur()"></div>
-      <div class="field"><label>Skutečný konec</label><input type="time" id="fEnd" value="${nowTime}" oninput="fUpdateDur()"></div>
+      <div class="field"><label>Skutečný začátek</label><input type="time" id="fStart" oninput="fUpdateDur()"></div>
+      <div class="field"><label>Skutečný konec</label><input type="time" id="fEnd" oninput="fUpdateDur()"></div>
     </div>
-    <div id="fDurPreview" class="dur-preview"><div class="dur-dot"></div><span id="fDurText">${fmtDur(calcDur(s.start,nowTime))}</span></div>
+    <div id="fDurPreview" class="dur-preview"><div class="dur-dot"></div><span id="fDurText">${fmtDur(calcDur(s.start,s.end))}</span></div>
     <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="fNote">${s.note||''}</textarea></div>`,
     [{label:'✔ Potvrdit jako odpracovanou',cls:'modal-btn-primary',fn:()=>doFinish(idx)},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
+  // Nastavit hodnoty přes JS po vložení do DOM
+  requestAnimationFrame(()=>{
+    const fS=document.getElementById('fStart');
+    const fE=document.getElementById('fEnd');
+    if(fS) fS.value=s.start;
+    if(fE) fE.value=s.end;
+    fUpdateDur();
+  });
 }
 function fUpdateDur(){
   const s=document.getElementById('fStart')?.value,e=document.getElementById('fEnd')?.value;
@@ -763,7 +923,6 @@ function confirmClearAll(){
   ]);
 }
 
-// ── LIST ──────────────────────────────────────────────────────────────────────
 function renderList(){
   const pl=document.getElementById('plannedList'),dl=document.getElementById('doneList');
   document.getElementById('plannedCount').textContent=planned.length?planned.length+' '+smenLabel(planned.length):'';
@@ -778,80 +937,45 @@ function renderList(){
   }).join('');
 }
 
-// ── EXPORT — period + custom range ────────────────────────────────────────────
 let exportPeriod='all';
-let customFrom=null, customTo=null, customActive=false;
-
 function setPeriod(p){
   exportPeriod=p;
   ['All','Month','Week','Custom'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
   document.getElementById('p'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
-  if(p!=='custom'){
-    document.getElementById('dateRangePicker').classList.remove('open');
-    document.getElementById('customRangeLabel').classList.remove('show');
-    customActive=false;
-  }
-  renderExport();
-}
-
-function toggleCustomPicker(){
-  const picker=document.getElementById('dateRangePicker');
-  const isOpen=picker.classList.contains('open');
-  // Activate the button style
-  ['All','Month','Week','Custom'].forEach(x=>document.getElementById('p'+x).classList.remove('active'));
-  document.getElementById('pCustom').classList.add('active');
-  exportPeriod='custom';
-  if(isOpen){
-    picker.classList.remove('open');
+  const row=document.getElementById('customRangeRow');
+  if(p==='custom'){
+    row.style.display='flex';
+    // nastav výchozí rozsah: začátek aktuálního měsíce — dnes
+    const now=new Date();
+    const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0'), d=String(now.getDate()).padStart(2,'0');
+    const firstDay=y+'-'+m+'-01';
+    const today=y+'-'+m+'-'+d;
+    if(!document.getElementById('customFrom').value) document.getElementById('customFrom').value=firstDay;
+    if(!document.getElementById('customTo').value) document.getElementById('customTo').value=today;
   } else {
-    picker.classList.add('open');
-    // Pre-fill with current month if empty
-    if(!document.getElementById('dateFrom').value){
-      const now=new Date();
-      const y=now.getFullYear(), m=pad(now.getMonth()+1);
-      document.getElementById('dateFrom').value=`${y}-${m}-01`;
-      document.getElementById('dateTo').value=todayStr();
-    }
+    row.style.display='none';
   }
   renderExport();
 }
-
-function onCustomDateChange(){
-  // live preview while typing — don't apply yet
-}
-
-function applyCustomRange(){
-  const from=document.getElementById('dateFrom').value;
-  const to=document.getElementById('dateTo').value;
-  if(!from||!to){ showToast('⚠ Vyplň obě data'); return; }
-  if(from>to){ showToast('⚠ Datum „od" musí být před „do"'); return; }
-  customFrom=from; customTo=to; customActive=true;
-  document.getElementById('dateRangePicker').classList.remove('open');
-  // Show badge
-  const lbl=document.getElementById('customRangeLabel');
-  document.getElementById('customRangeText').textContent=fmtDateCZ(from)+' – '+fmtDateCZ(to);
-  lbl.classList.add('show');
-  renderExport();
-}
-
 function getFiltered(){
+  if(exportPeriod==='all') return done;
   const now=new Date();
   return done.filter(s=>{
     const d=parseDate(s.date);
     if(exportPeriod==='month') return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
-    if(exportPeriod==='week'){
-      const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0);
-      const eow=new Date(sow); eow.setDate(sow.getDate()+6); eow.setHours(23,59,59,999);
-      return d>=sow&&d<=eow;
+    if(exportPeriod==='week'){ const sow=new Date(now); sow.setDate(now.getDate()-((now.getDay()+6)%7)); sow.setHours(0,0,0,0); const eow=new Date(sow); eow.setDate(sow.getDate()+6); return d>=sow&&d<=eow; }
+    if(exportPeriod==='custom'){
+      const from=document.getElementById('customFrom')?.value;
+      const to=document.getElementById('customTo')?.value;
+      if(!from&&!to) return true;
+      const ds=s.date;
+      if(from&&to) return ds>=from&&ds<=to;
+      if(from) return ds>=from;
+      if(to) return ds<=to;
     }
-    if(exportPeriod==='custom'&&customActive&&customFrom&&customTo){
-      const f=parseDate(customFrom), t=parseDate(customTo); t.setHours(23,59,59,999);
-      return d>=f&&d<=t;
-    }
-    return true; // 'all' or custom not yet applied
+    return true;
   });
 }
-
 function buildExportText(){
   const f=getFiltered();
   if(f.length===0) return '— žádné záznamy —';
@@ -913,17 +1037,73 @@ setInterval(()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); },5*
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&scriptUrl) autoSyncFromSheets(true); });
 
 // ── PULL TO REFRESH ───────────────────────────────────────────────────────────
-(()=>{
-  const ind=document.getElementById('ptr-indicator');
-  const ringCirc=document.querySelector('#ptr-ring circle');
-  const CIRCUM=62.8,THRESHOLD=80,MAX_PULL=120;
-  let startY=0,pulling=false,triggered=false;
-  function setProgress(r){ ringCirc.style.strokeDashoffset=CIRCUM*(1-Math.min(r,1)); }
-  function show(){ ind.classList.add('visible'); }
-  function hide(){ ind.classList.remove('visible','loading','done'); ringCirc.style.strokeDashoffset=CIRCUM; }
-  document.addEventListener('touchstart',e=>{ if(window.scrollY>0)return; startY=e.touches[0].clientY; pulling=true; triggered=false; ind.classList.remove('loading','done'); setProgress(0); },{passive:true});
-  document.addEventListener('touchmove',e=>{ if(!pulling)return; const dy=e.touches[0].clientY-startY; if(dy<=0){hide();return;} show(); setProgress(dy/MAX_PULL); if(dy>=THRESHOLD&&!triggered){ triggered=true; ind.style.transition='transform .15s cubic-bezier(.34,1.56,.64,1),opacity .2s'; ind.style.transform='translateX(-50%) scale(1.18)'; setTimeout(()=>{ ind.style.transition='transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s'; ind.style.transform='translateX(-50%) scale(1)'; },150); } },{passive:true});
-  document.addEventListener('touchend',async()=>{ if(!pulling)return; pulling=false; if(!triggered){hide();return;} ind.classList.add('loading'); await manualSync(); ind.classList.remove('loading'); ind.classList.add('done'); setTimeout(hide,900); },{passive:true});
+(() => {
+  const ind      = document.getElementById('ptr-indicator');
+  const ringCirc = document.querySelector('#ptr-ring circle');
+  const CIRCUM   = 62.8; // 2π×9
+  const THRESHOLD = 80;
+  const MAX_PULL  = 120;
+
+  let startY   = 0;
+  let pulling  = false;
+  let triggered= false;
+
+  function setProgress(ratio) {
+    const clamped = Math.min(ratio, 1);
+    ringCirc.style.strokeDashoffset = CIRCUM * (1 - clamped);
+  }
+
+  function show() { ind.classList.add('visible'); }
+  function hide() {
+    ind.classList.remove('visible','loading','done');
+    ringCirc.style.strokeDashoffset = CIRCUM;
+  }
+
+  document.addEventListener('touchstart', e => {
+    if (window.scrollY > 0) return;
+    startY    = e.touches[0].clientY;
+    pulling   = true;
+    triggered = false;
+    ind.classList.remove('loading','done');
+    setProgress(0);
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { hide(); return; }
+
+    show();
+    setProgress(dy / MAX_PULL);
+
+    if (dy >= THRESHOLD && !triggered) {
+      triggered = true;
+      // small bounce to signal "ready to release"
+      ind.style.transition = 'transform .15s cubic-bezier(.34,1.56,.64,1), opacity .2s';
+      ind.style.transform  = 'translateX(-50%) scale(1.18)';
+      setTimeout(() => {
+        ind.style.transition = 'transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s';
+        ind.style.transform  = 'translateX(-50%) scale(1)';
+      }, 150);
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', async () => {
+    if (!pulling) return;
+    pulling = false;
+
+    if (!triggered) { hide(); return; }
+
+    // Show spinning arc
+    ind.classList.add('loading');
+
+    await manualSync();
+
+    // Show checkmark
+    ind.classList.remove('loading');
+    ind.classList.add('done');
+    setTimeout(hide, 900);
+  }, { passive: true });
 })();
 </script>
 </body>

@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Směny">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Směny"><title>Směny</title>
+<title>Směny</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -804,13 +805,13 @@ function openAddForDay(){
     <div class="field" style="margin-top:10px"><label>Poznámka (nepovinné)</label><textarea id="mNote" placeholder="Pokladna, sklad…"></textarea></div>`,
     [{label:'Přidat',cls:'modal-btn-primary',fn:doAddShift},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
-  // Explicitně vymazat hodnoty — Safari může cachovat předchozí hodnoty
-  requestAnimationFrame(()=>{
+  // iOS Safari potřebuje delší zpoždění
+  setTimeout(()=>{
     const mS=document.getElementById('mStart');
     const mE=document.getElementById('mEnd');
     if(mS) mS.value='';
     if(mE) mE.value='';
-  });
+  }, 60);
 }
 function mUpdateDur(){
   const s=document.getElementById('mStart')?.value,e=document.getElementById('mEnd')?.value;
@@ -841,14 +842,14 @@ function openEditPlanned(idx){
     <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="eNote">${s.note||''}</textarea></div>`,
     [{label:'Uložit',cls:'modal-btn-primary',fn:()=>doEditPlanned(idx)},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
-  // Nastavit hodnoty přes JS po vložení do DOM — atribut value nefunguje spolehlivě u time inputů
-  requestAnimationFrame(()=>{
+  // iOS Safari potřebuje delší zpoždění než jeden frame
+  setTimeout(()=>{
     const eS=document.getElementById('eStart');
     const eE=document.getElementById('eEnd');
-    if(eS) eS.value=s.start;
-    if(eE) eE.value=s.end;
+    if(eS){ eS.value=''; eS.value=s.start; }
+    if(eE){ eE.value=''; eE.value=s.end; }
     eUpdateDur();
-  });
+  }, 60);
 }
 function eUpdateDur(){
   const s=document.getElementById('eStart')?.value,e=document.getElementById('eEnd')?.value;
@@ -877,14 +878,14 @@ function openConfirmFinish(idx){
     <div class="field" style="margin-top:10px"><label>Poznámka</label><textarea id="fNote">${s.note||''}</textarea></div>`,
     [{label:'✔ Potvrdit jako odpracovanou',cls:'modal-btn-primary',fn:()=>doFinish(idx)},{label:'Zrušit',cls:'modal-btn-cancel',fn:null}]
   );
-  // Nastavit hodnoty přes JS po vložení do DOM
-  requestAnimationFrame(()=>{
+  // iOS Safari potřebuje delší zpoždění než jeden frame
+  setTimeout(()=>{
     const fS=document.getElementById('fStart');
     const fE=document.getElementById('fEnd');
-    if(fS) fS.value=s.start;
-    if(fE) fE.value=s.end;
+    if(fS){ fS.value=''; fS.value=s.start; }
+    if(fE){ fE.value=''; fE.value=s.end; }
     fUpdateDur();
-  });
+  }, 60);
 }
 function fUpdateDur(){
   const s=document.getElementById('fStart')?.value,e=document.getElementById('fEnd')?.value;
